@@ -37,10 +37,8 @@ function isNeighbor(v, u) {
     return Math.abs(v.i - u.i) + Math.abs(v.j - u.j) == 1;
 }
 
-
-async function createEdges() {
+function createEdges() {
     let edges = [];
-    console.log("I try");
     const numberOfCrosses = xLabels.length * yLabels.length;
     for (let vId = 0; vId < numberOfCrosses; vId++) {
         const v = new Vertex(vId);
@@ -52,6 +50,7 @@ async function createEdges() {
             }
         }
     }
+    return edges;
 }
 
 async function createPdf() {
