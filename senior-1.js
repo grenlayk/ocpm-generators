@@ -9,11 +9,13 @@ function getRandomInt(min, max) {
 
 const xLabels = ["А", "Б", "В", "Г", "Д", "Е", "Ж"];
 const yLabels = ["1", "2", "3", "4", "5"];
+const numberOfCrosses = xLabels.length * yLabels.length;
 
 class Vertex {
     constructor(id) {
       this.i = parseInt(id / xLabels.length);
       this.j = id % xLabels.length;
+      this.id = id;
     }
 
     label() {
@@ -39,22 +41,47 @@ function isNeighbor(v, u) {
 
 function createEdges() {
     let edges = [];
-    const numberOfCrosses = xLabels.length * yLabels.length;
     for (let vId = 0; vId < numberOfCrosses; vId++) {
         const v = new Vertex(vId);
         for (let uId = 0; uId < numberOfCrosses; uId++) {
             const u = new Vertex(uId);
             if (isNeighbor(v, u)) {
                 edges.push(new Edge(v, u, getRandomInt(10, 50)));
-                console.log(edges[edges.length - 1].logMessage());
+                //console.log(edges[edges.length - 1].logMessage());
             }
         }
     }
     return edges;
 }
 
-async function createPdf() {
+function createEdgesTable() {
+    const edges = createEdges();
+    const edgesTable = new Array(numberOfCrosses + 1);
 
+    edgesTable[0] = new Array(numberOfCrosses + 1);
+    edgesTable[0][0] = "-";
+    for (let j = 1; j <= numberOfCrosses; j++) {
+        edgesTable[0][j] = new Vertex(j - 1).label();
+    }
+    for (let i = 1; i <= numberOfCrosses; i++) {
+        edgesTable[i] = new Array(numberOfCrosses + 1);
+        edgesTable[i][0] = new Vertex(i - 1).label();
+        for (let j = 1; j <= numberOfCrosses; j++) {
+            edgesTable[i][j] = "-";
+        }
+    }
+    for (const edge of edges) {
+        edgesTable[edge.v.id + 1][edge.u.id + 1] = edge.weight;
+        edgesTable[edge.u.id + 1][edge.v.id + 1] = edge.weight;
+    }
+    return edgesTable;
+}
+
+function printTable(edgesTable) {
+    console.table(edgesTable);
+}
+
+async function createPdf() {
   // Create a new PDFDocument
   const pdfDoc = await PDFDocument.create()
 
@@ -76,4 +103,5 @@ async function createPdf() {
 }
 
 //createPdf();
-createEdges();
+const edgesTable = createEdgesTable();
+printTable(edgesTable);
