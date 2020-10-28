@@ -100,9 +100,9 @@ function draw(page, font, text, x, y) {
     const textHeight = font.heightAtSize(textSize)
     // Draw a box around the string of text
     page.drawRectangle({
-        x: x - 5,
+        x: x - 10,
         y: y - 20,
-        width: textWidth + 10,
+        width: textWidth + 20,
         height: textHeight + 5,
         color: rgb(1, 1, 1),
         //borderColor: rgb(0, 0, 0),
