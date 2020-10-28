@@ -12,12 +12,6 @@ const yLabels = ["1", "2", "3", "4", "5"];
 const numberOfCrosses = xLabels.length * yLabels.length;
 
 const cellSize = 568;
-
-// const hLeftTopX = 3020; // for horizontal lines
-// const hLeftTopY = 2815; // for horizontal lines
-// const vLeftTopX = 2610; // for vertical lines
-// const vLeftTopY = 2430; // for vertical lines
-
 const hLeftTopX = 3020; // for horizontal lines
 const hLeftTopY = 2700; // for horizontal lines
 const vLeftTopX = 2740; // for vertical lines
@@ -59,7 +53,6 @@ function createEdges() {
             const u = new Vertex(uId);
             if (isNeighbor(v, u)) {
                 edges.push(new Edge(v, u, getRandomInt(10, 50)));
-                //console.log(edges[edges.length - 1].logMessage());
             }
         }
     }
@@ -105,8 +98,7 @@ function draw(page, font, text, x, y) {
         width: textWidth + 20,
         height: textHeight + 5,
         color: rgb(1, 1, 1),
-        //borderColor: rgb(0, 0, 0),
-        //borderWidth: 1.5,
+        //color: rgb(0.1, 0.9, 0.1),
     })
 
     page.drawText(text, {
@@ -119,57 +111,47 @@ function draw(page, font, text, x, y) {
     })
 }
 
+async function drawEdges(firstPage, pdfDoc) {
+  const helveticaFont = await pdfDoc.embedFont(StandardFonts.Helvetica);
+  const edges = createEdges();
+  for (edge of edges) {
+      let x = 0, y = 0;
+      if (edge.v.j == edge.u.j) { // vertical edge
+        x = vLeftTopX + cellSize * edge.v.j;
+        y = vLeftTopY - cellSize * Math.min(edge.v.i, edge.u.i);
+      } else { // horizontal edge
+        x = hLeftTopX + cellSize * Math.min(edge.v.j, edge.u.j)
+        y = hLeftTopY - cellSize * edge.v.i;
+      }
+      const text = edge.weight;
+      draw(firstPage, helveticaFont, text.toString(), x, y);
+  }
+}
+
 async function createPdf() {
   // Field pdf to modify
   const url = 'pdf/graph.pdf';
-
-  // fs for file reading
-  const fs = require('fs');
 
   // This should be a Uint8Array or ArrayBuffer
   // This data can be obtained in a number of different ways
   // If your running in a Node environment, you could use fs.readFile()
   // In the browser, you could make a fetch() call and use res.arrayBuffer()
+  const fs = require('fs');
   const pdfBytes = fs.readFileSync(url);
   const pdfDoc = await PDFDocument.load(pdfBytes);
 
   // Get the first page of the document
   const pages = pdfDoc.getPages();
-  const firstPage = pages[0];
 
-  // Modify pdf here
-
-  // Embed the Helvetica font
-  const helveticaFont = await pdfDoc.embedFont(StandardFonts.Helvetica);
-
-  const edges = createEdges();
-  for (edge of edges) {
-      if (edge.v.j == edge.u.j) { // vertical edge
-        const x = vLeftTopX + cellSize * edge.v.j;
-        const y = vLeftTopY - cellSize * Math.min(edge.v.i, edge.u.i);
-        const label = edge.weight;
-        draw(firstPage, helveticaFont, label.toString(), x, y);
-      } else {
-        const x = hLeftTopX + cellSize * Math.min(edge.v.j, edge.u.j)
-        const y = hLeftTopY - cellSize * edge.v.i;
-        const label = edge.weight;
-        draw(firstPage, helveticaFont, label.toString(), x, y);
-      }
-      //console.log(edge);
-  }
+  // Modify pdf
+  drawEdges(pages[0], pdfDoc);
 
   // Save pdf
   const pdfResultBytes = await pdfDoc.save();
 
   // Create result pdf
   fs.writeFile('senior-1.pdf', pdfResultBytes, ()=>{});
-
-  //console.log("File created!") 
-
-  // // Trigger the browser to download the PDF document
-  // download(pdfBytes, "test.pdf", "application/pdf");
 }
 
 createPdf();
-// const edgesTable = createEdgesTable();
-// printTable(edgesTable);
+console.log('File created!');
