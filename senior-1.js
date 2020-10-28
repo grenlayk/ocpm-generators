@@ -23,10 +23,17 @@ const color = [rgb(1, 1, 1), rgb(0, 0, 0)];
 const lineTopX = 1120;
 const lineTopY = 1325;
 
+// for code pdf
+const codeLineTopX = 38;
+const codeLineTopY = 740.7;
+const codeLineX = 534.5;
+const codeLineY = 72.1;
+
 // random integer number in range [min; max]
 function getRandomInt(min, max) {
     return min + Math.floor(Math.random() * Math.floor(max - min));
 }
+
 
 class Vertex {
     constructor(id) {
@@ -40,6 +47,7 @@ class Vertex {
     }
 }
 
+
 class Edge {
     constructor(v, u, weight) {
       this.v = v;
@@ -52,9 +60,11 @@ class Edge {
     }
 }
 
+
 function isNeighbor(v, u) {
     return Math.abs(v.i - u.i) + Math.abs(v.j - u.j) == 1;
 }
+
 
 function createEdges() {
     let edges = [];
@@ -69,6 +79,7 @@ function createEdges() {
     }
     return edges;
 }
+
 
 function createEdgesTable() {
     const edges = createEdges();
@@ -87,7 +98,8 @@ function createEdgesTable() {
     return edgesTable;
 }
 
-function draw(page, font, text, x, y, green) {
+
+function draw(page, font, text, x, y, green=false) {
     const textSize = 150;
     const textWidth = font.widthOfTextAtSize(text, textSize);
     const textHeight = font.heightAtSize(textSize);
@@ -115,6 +127,7 @@ function draw(page, font, text, x, y, green) {
     })
 }
 
+
 function getGoalVertex() {
     let vertex = new Vertex(getRandomInt(0, numberOfCrosses - 1));
     while (vertex.i == 2 && vertex.j < 5 || vertex.j == 0) {
@@ -124,7 +137,7 @@ function getGoalVertex() {
 }
 
 
-function drawEdges(firstPage, font, edges, green) {
+function drawEdges(firstPage, font, edges, green=false) {
   for (edge of edges) {
       let x = 0, y = 0;
       if (edge.v.j == edge.u.j) { // vertical edge
@@ -205,8 +218,7 @@ function drawCode(goalVertex, page) {
     }
 }
 
-
-async function createPdf(drawShortest, filename, edges) {
+async function createFieldPdf(filename, edges, drawShortest=false, goalVertex=null) {
   // Field pdf to modify
   const url = 'pdf/graph.pdf';
   // This should be a Uint8Array or ArrayBuffer
@@ -220,11 +232,8 @@ async function createPdf(drawShortest, filename, edges) {
   const font = await pdfDoc.embedFont(StandardFonts.Helvetica);
 
   // Modify pdf
-  drawEdges(pages[0], font, edges, green=false);
+  drawEdges(pages[0], font, edges);
   if (drawShortest) {
-    // create goal vertex
-    const goalVertex = getGoalVertex();
-    console.log("Chosen vertex is " + goalVertex.label());
     drawCode(goalVertex, pages[0]);
     pathEdges = getShortestPathEdges(edges, goalVertex);
     drawEdges(pages[0], font, pathEdges, green=true);
@@ -237,11 +246,51 @@ async function createPdf(drawShortest, filename, edges) {
 }
 
 
+function drawCodePaper(goalVertex, page) {
+    const colors = [1, 0, 1];
+    let id = (goalVertex.j + 1) * 10 + (goalVertex.i + 1);
+    for (let i = 0; i <= 6; i++) {
+        colors.push((id >> i) & 1);
+    }
+    for (let i = 0; i < colors.length; i++) {
+        page.drawRectangle({
+            x: codeLineTopX,
+            y: codeLineTopY - i * codeLineY,
+            width: codeLineX,
+            height: codeLineY + 0.3,
+            color: color[colors[i]],
+        })
+    }
+}
+
+
+async function createCodePdf(filename, goalVertex) {
+    const url = 'pdf/senior-code-template.pdf';
+    const fs = require('fs');
+    const pdfBytes = fs.readFileSync(url);
+    const pdfDoc = await PDFDocument.load(pdfBytes);
+    const pages = pdfDoc.getPages();
+    const font = await pdfDoc.embedFont(StandardFonts.Helvetica);
+    drawCodePaper(goalVertex, pages[0]);
+    const pdfResultBytes = await pdfDoc.save();
+    fs.writeFile(filename, pdfResultBytes, ()=>{});
+}
+
+
 // create edges list
 const edges = createEdges();
-// draw them on field
-createPdf(false, 'senior-1-edges.pdf', edges);
-// draw shortest path and code
+// draw edges on field
+createFieldPdf('senior-1-edges.pdf', edges);
+
+// create goal vertex
+const goalVertex = getGoalVertex();
+console.log("Chosen vertex is " + goalVertex.label());
+
+// draw shortest path and code on field
 // recall this to choose another cross
-createPdf(true, 'senior-1-path.pdf', edges);
+createFieldPdf('senior-1-path.pdf', edges, true,  goalVertex);
+
+// draw code for print
+createCodePdf('senior-1-code.pdf', goalVertex);
+
 console.log('Files created!');
