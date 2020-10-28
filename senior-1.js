@@ -1,17 +1,27 @@
 // Library from https://github.com/Hopding/pdf-lib
-const { min } = require('lodash');
 const { PDFDocument, StandardFonts, rgb, degrees} = require('pdf-lib');
 
 const xLabels = ["А", "Б", "В", "Г", "Д", "Е", "Ж"];
 const yLabels = ["1", "2", "3", "4", "5"];
 const numberOfCrosses = xLabels.length * yLabels.length;
-const INF = 10000;
 
+const INF = 10000;
+const START_VERTEX = 14;
+const EPS = 2;
+
+// for edges painting
 const cellSize = 568;
 const hLeftTopX = 3020; // for horizontal lines
 const hLeftTopY = 2700; // for horizontal lines
 const vLeftTopX = 2740; // for vertical lines
 const vLeftTopY = 2430; // for vertical lines
+
+// for code painting
+const lineX = 84;
+const lineY = 595;
+const color = [rgb(1, 1, 1), rgb(0, 0, 0)];
+const lineTopX = 1120;
+const lineTopY = 1325;
 
 // random integer number in range [min; max]
 function getRandomInt(min, max) {
@@ -77,25 +87,24 @@ function createEdgesTable() {
     return edgesTable;
 }
 
-function draw(page, font, text, x, y, background, green) {
+function draw(page, font, text, x, y, green) {
     const textSize = 150;
+    const textWidth = font.widthOfTextAtSize(text, textSize);
+    const textHeight = font.heightAtSize(textSize);
+
     let backgroundColor = rgb(1, 1, 1);
-    if (green) {
+    if (green) { // let's color shortest path 
         backgroundColor = rgb(0.1, 0.9, 0.1);
     }
-
-    if (background) {
-        const textWidth = font.widthOfTextAtSize(text, textSize)
-        const textHeight = font.heightAtSize(textSize)
-        // Draw a box around the string of text
-        page.drawRectangle({
-            x: x - 10,
-            y: y - 20,
-            width: textWidth + 20,
-            height: textHeight + 5,
-            color: backgroundColor,
-        })
-    }
+    
+    // Draw a box around the string of text
+    page.drawRectangle({
+        x: x - 10,
+        y: y - 20,
+        width: textWidth + 20,
+        height: textHeight + 5,
+        color: backgroundColor,
+    })
     
     page.drawText(text, {
         x: x,
@@ -114,7 +123,8 @@ function getGoalVertex() {
     return vertex;
 }
 
-async function drawEdges(firstPage, font, edges, green) {
+
+function drawEdges(firstPage, font, edges, green) {
   for (edge of edges) {
       let x = 0, y = 0;
       if (edge.v.j == edge.u.j) { // vertical edge
@@ -125,15 +135,15 @@ async function drawEdges(firstPage, font, edges, green) {
         y = hLeftTopY - cellSize * edge.v.i;
       }
       const text = edge.weight;
-      draw(firstPage, font, text.toString(), x, y, true, green);
+      draw(firstPage, font, text.toString(), x, y, green);
   }
 }
 
+
 function getShortestPathEdges(edges, goalVertex) {
-    const startVertex = new Vertex(14);
-    const w = createEdgesTable();
-    
     // init
+    const startVertex = new Vertex(START_VERTEX);
+    const w = createEdgesTable();
     let distance = new Array(numberOfCrosses);
     let isUsed = new Array(numberOfCrosses);
     let parent = new Array(numberOfCrosses);
@@ -144,11 +154,11 @@ function getShortestPathEdges(edges, goalVertex) {
     }
     distance[startVertex.id] = 0;
 
+    // dijkstra
     let currentVertex = startVertex;
     for (let i = 0; i < numberOfCrosses; i++) {
         const id = currentVertex.id;
         isUsed[id] = true;
-
         for (let j = 0; j < numberOfCrosses; j++) {
             const otherVertex = new Vertex(j);
             if (isNeighbor(currentVertex, otherVertex) && distance[j] > distance[id] + w[j][id] && !isUsed[j]) {
@@ -156,7 +166,6 @@ function getShortestPathEdges(edges, goalVertex) {
                 parent[j] = currentVertex;
             }
         }
-
         let minVertexId = 0;
         let minD = INF + 1;
         for (let j = 0; j < numberOfCrosses; ++j) {
@@ -168,6 +177,7 @@ function getShortestPathEdges(edges, goalVertex) {
         currentVertex = new Vertex(minVertexId);
     }
 
+    // find path
     let pathVertex = goalVertex;
     let result = new Array();
     while (pathVertex.id != startVertex.id) {
@@ -177,10 +187,28 @@ function getShortestPathEdges(edges, goalVertex) {
     return result;
 }
 
-async function createPdf() {
+
+function drawCode(goalVertex, page) {
+    const colors = [1, 0, 1];
+    let id = (goalVertex.j + 1) * 10 + (goalVertex.i + 1);
+    for (let i = 0; i <= 6; i++) {
+        colors.push((id >> i) & 1);
+    }
+    for (let i = 0; i < colors.length; i++) {
+        page.drawRectangle({
+            x: lineTopX + lineX * i,
+            y: lineTopY,
+            width: lineX + EPS,
+            height: lineY,
+            color: color[colors[i]],
+        })
+    }
+}
+
+
+async function createPdf(drawShortest, filename, edges) {
   // Field pdf to modify
   const url = 'pdf/graph.pdf';
-
   // This should be a Uint8Array or ArrayBuffer
   // This data can be obtained in a number of different ways
   // If your running in a Node environment, you could use fs.readFile()
@@ -188,25 +216,32 @@ async function createPdf() {
   const fs = require('fs');
   const pdfBytes = fs.readFileSync(url);
   const pdfDoc = await PDFDocument.load(pdfBytes);
-
   const pages = pdfDoc.getPages();
   const font = await pdfDoc.embedFont(StandardFonts.Helvetica);
 
   // Modify pdf
-  const goalVertex = getGoalVertex();
-  console.log(goalVertex.label());
-
-  const edges = createEdges();
   drawEdges(pages[0], font, edges, green=false);
-  pathEdges = getShortestPathEdges(edges, goalVertex);
-  drawEdges(pages[0], font, pathEdges, green=true);
-  
+  if (drawShortest) {
+    // create goal vertex
+    const goalVertex = getGoalVertex();
+    console.log("Chosen vertex is " + goalVertex.label());
+    drawCode(goalVertex, pages[0]);
+    pathEdges = getShortestPathEdges(edges, goalVertex);
+    drawEdges(pages[0], font, pathEdges, green=true);
+  }
+
   // Save pdf
   const pdfResultBytes = await pdfDoc.save();
-
   // Create result pdf
-  fs.writeFile('senior-1.pdf', pdfResultBytes, ()=>{});
+  fs.writeFile(filename, pdfResultBytes, ()=>{});
 }
 
-createPdf();
-console.log('File created!');
+
+// create edges list
+const edges = createEdges();
+// draw them on field
+createPdf(false, 'senior-1-edges.pdf', edges);
+// draw shortest path and code
+// recall this to choose another cross
+createPdf(true, 'senior-1-path.pdf', edges);
+console.log('Files created!');
