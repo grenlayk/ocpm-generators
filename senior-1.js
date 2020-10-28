@@ -13,9 +13,14 @@ const numberOfCrosses = xLabels.length * yLabels.length;
 
 const cellSize = 568;
 
+// const hLeftTopX = 3020; // for horizontal lines
+// const hLeftTopY = 2815; // for horizontal lines
+// const vLeftTopX = 2610; // for vertical lines
+// const vLeftTopY = 2430; // for vertical lines
+
 const hLeftTopX = 3020; // for horizontal lines
-const hLeftTopY = 2815; // for horizontal lines
-const vLeftTopX = 2610; // for vertical lines
+const hLeftTopY = 2700; // for horizontal lines
+const vLeftTopX = 2740; // for vertical lines
 const vLeftTopY = 2430; // for vertical lines
 
 class Vertex {
@@ -88,13 +93,29 @@ function printTable(edgesTable) {
     console.table(edgesTable);
 }
 
-function draw(page, font, label, x, y) {
-    page.drawText(label, {
+function draw(page, font, text, x, y) {
+    const textSize = 150;
+
+    const textWidth = font.widthOfTextAtSize(text, textSize)
+    const textHeight = font.heightAtSize(textSize)
+    // Draw a box around the string of text
+    page.drawRectangle({
+        x: x - 5,
+        y: y - 15,
+        width: textWidth + 10,
+        height: textHeight + 5,
+        color: rgb(1, 1, 1),
+        borderColor: rgb(0, 0, 0),
+        borderWidth: 1.5,
+    })
+
+    page.drawText(text, {
         x: x,
         y: y,
-        size: 150,
+        size: textSize,
         font: font,
-        color: rgb(0.95, 0.1, 0.1),
+        color: rgb(0, 0, 0),
+        backgroundColor: rgb(1, 1, 1),
     })
 }
 
