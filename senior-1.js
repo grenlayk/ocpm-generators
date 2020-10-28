@@ -101,12 +101,12 @@ function draw(page, font, text, x, y) {
     // Draw a box around the string of text
     page.drawRectangle({
         x: x - 5,
-        y: y - 15,
+        y: y - 20,
         width: textWidth + 10,
         height: textHeight + 5,
         color: rgb(1, 1, 1),
-        borderColor: rgb(0, 0, 0),
-        borderWidth: 1.5,
+        //borderColor: rgb(0, 0, 0),
+        //borderWidth: 1.5,
     })
 
     page.drawText(text, {
