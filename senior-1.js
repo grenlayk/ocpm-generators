@@ -285,10 +285,9 @@ createFieldPdf('senior-1-edges.pdf', edges);
 const goalVertex = getGoalVertex();
 console.log("Chosen vertex is " + goalVertex.label());
 
+// recall this with different goalVertex if necessary
 // draw shortest path and code on field
-// recall this to choose another cross
 createFieldPdf('senior-1-path.pdf', edges, true, goalVertex);
-
 // draw code for print
 createCodePdf('senior-1-code.pdf', goalVertex);
 
