@@ -81,8 +81,7 @@ function createEdges() {
 }
 
 
-function createEdgesTable() {
-  const edges = createEdges();
+function createEdgesTable(edges) {
   const edgesTable = new Array(numberOfCrosses);
 
   for (let i = 0; i < numberOfCrosses; i++) {
@@ -156,7 +155,7 @@ function drawEdges(firstPage, font, edges, green = false) {
 function getShortestPathEdges(edges, goalVertex) {
   // init
   const startVertex = new Vertex(START_VERTEX);
-  const w = createEdgesTable();
+  const w = createEdgesTable(edges);
   let distance = new Array(numberOfCrosses);
   let isUsed = new Array(numberOfCrosses);
   let parent = new Array(numberOfCrosses);
