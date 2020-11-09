@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Grenlayk's page</title>
+    <link rel="stylesheet" href="style.css"></link>
+    <script type="text/javascript" src="https://unpkg.com/pdf-lib/dist/pdf-lib.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300&display=swap" rel="stylesheet">
+  </head>
+  <body onload="refreshPage()">
+      <nav class="topnav">
+        Генераторы конфигурации полей Олимпиады ЦПМ
+      </nav> 
+      <div id="content">
+        Старшая 1. Граф
+        <div>
+        <button id="mybutton" onclick="refreshPage()">
+          Сгенерировать веса
+        </button>
+        <button id="mybutton" onclick="createVertex()">
+          Сгенерировать точку
+        </button>
+        <button id="mybutton" onclick="downloadEdges()">
+          <a id="exportJSON" target="_blank">
+            Скачать список ребер
+          </a>
+        </button>
+        </div>
+        <iframe id="field"></iframe>
+        <iframe id="path"></iframe>
+        <iframe id="code"></iframe>
+        </div>
+  </body>
+  <script type="text/javascript" src="senior-1.js"></script>
+</html>

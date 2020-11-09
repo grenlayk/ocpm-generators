@@ -1,5 +1,10 @@
 // Library from https://github.com/Hopding/pdf-lib
-const { PDFDocument, StandardFonts, rgb, degrees } = require('pdf-lib');
+const { 
+  PDFDocument, 
+  StandardFonts, 
+  rgb, 
+  degrees 
+} = PDFLib;
 
 const xLabels = ["А", "Б", "В", "Г", "Д", "Е", "Ж"];
 const yLabels = ["1", "2", "3", "4", "5"];
@@ -29,11 +34,7 @@ const codeLineTopY = 740.9;
 const codeLineX = 534.5;
 const codeLineY = 72.1;
 
-// random integer number in range [min; max]
-function getRandomInt(min, max) {
-  return min + Math.floor(Math.random() * Math.floor(max - min));
-}
-
+let edges = null;
 
 class Vertex {
   constructor(id) {
@@ -58,6 +59,28 @@ class Edge {
   logMessage() {
     return this.v.label() + " <-> " + this.u.label() + " : " + this.weight;
   }
+
+  getEdgeData() {
+    return [ this.v.label(), this.u.label(), this.weight ];
+  }
+}
+
+
+function downloadEdges() {
+  let edgesData = [];
+  for (const edge of edges) {
+    edgesData.push(edge.getEdgeData());
+  }
+  const element = document.getElementById("exportJSON");
+  const data = "text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(edgesData));
+  element.setAttribute("href", "data:"+data);
+  element.setAttribute("download", "data.json");
+}
+
+
+// random integer number in range [min; max]
+function getRandomInt(min, max) {
+  return min + Math.floor(Math.random() * Math.floor(max - min));
 }
 
 
@@ -83,7 +106,6 @@ function createEdges() {
 
 function createEdgesTable(edges) {
   const edgesTable = new Array(numberOfCrosses);
-
   for (let i = 0; i < numberOfCrosses; i++) {
     edgesTable[i] = new Array(numberOfCrosses);
     for (let j = 0; j < numberOfCrosses; j++) {
@@ -217,19 +239,25 @@ function drawCode(goalVertex, page) {
   }
 }
 
-async function createFieldPdf(filename, edges, drawShortest = false, goalVertex = null) {
-  // Field pdf to modify
+
+const fetchBinaryAsset = (asset) =>
+  fetch(`${asset}`).then((res) => res.arrayBuffer());
+
+
+const renderInIframe = (pdfBytes, divName) => {
+  const blob = new Blob([pdfBytes], { type: 'application/pdf' });
+  const blobUrl = URL.createObjectURL(blob);
+  document.getElementById(divName).src = blobUrl;
+};
+
+
+// Create field pdf with weights and the shortest path
+async function createFieldPdf(divname, edges, drawShortest = false, goalVertex = null) {
   const url = 'pdf/graph.pdf';
-  // This should be a Uint8Array or ArrayBuffer
-  // This data can be obtained in a number of different ways
-  // If your running in a Node environment, you could use fs.readFile()
-  // In the browser, you could make a fetch() call and use res.arrayBuffer()
-  const fs = require('fs');
-  const pdfBytes = fs.readFileSync(url);
+  const pdfBytes = await fetchBinaryAsset(url);
   const pdfDoc = await PDFDocument.load(pdfBytes);
   const pages = pdfDoc.getPages();
   const font = await pdfDoc.embedFont(StandardFonts.Helvetica);
-
   // Modify pdf
   drawEdges(pages[0], font, edges);
   if (drawShortest) {
@@ -237,14 +265,13 @@ async function createFieldPdf(filename, edges, drawShortest = false, goalVertex 
     pathEdges = getShortestPathEdges(edges, goalVertex);
     drawEdges(pages[0], font, pathEdges, green = true);
   }
-
-  // Save pdf
+  // Add pdf to frame
   const pdfResultBytes = await pdfDoc.save();
-  // Create result pdf
-  fs.writeFile(filename, pdfResultBytes, () => { });
+  renderInIframe(pdfResultBytes, divname);
 }
 
 
+// Draw code pdf to print
 function drawCodePaper(goalVertex, page) {
   const colors = [1, 0, 1];
   let id = (goalVertex.j + 1) * 10 + (goalVertex.i + 1);
@@ -263,32 +290,39 @@ function drawCodePaper(goalVertex, page) {
 }
 
 
+// Add code pdf to frame
 async function createCodePdf(filename, goalVertex) {
   const url = 'pdf/senior-code-template.pdf';
-  const fs = require('fs');
-  const pdfBytes = fs.readFileSync(url);
+  const pdfBytes = await fetchBinaryAsset(url);
   const pdfDoc = await PDFDocument.load(pdfBytes);
   const pages = pdfDoc.getPages();
   const font = await pdfDoc.embedFont(StandardFonts.Helvetica);
   drawCodePaper(goalVertex, pages[0]);
   const pdfResultBytes = await pdfDoc.save();
-  fs.writeFile(filename, pdfResultBytes, () => { });
+  renderInIframe(pdfResultBytes, filename);
 }
 
 
-// create edges list
-const edges = createEdges();
-// draw edges on field
-createFieldPdf('senior-1-edges.pdf', edges);
+function refreshPage() {
+  edges = null;
+  createVertex();
+}
 
-// create goal vertex
-const goalVertex = getGoalVertex();
-console.log("Chosen vertex is " + goalVertex.label());
 
-// recall this with different goalVertex if necessary
-// draw shortest path and code on field
-createFieldPdf('senior-1-path.pdf', edges, true, goalVertex);
-// draw code for print
-createCodePdf('senior-1-code.pdf', goalVertex);
+// create edges list and draw edges on the field
+function createField() {
+  edges = createEdges();
+  createFieldPdf('field', edges);
+}
 
-console.log('Files created!');
+function createVertex() {
+  if (edges == null) {
+    createField();
+  }
+  // create goal vertex
+  const goalVertex = getGoalVertex();
+  console.log("Chosen vertex is " + goalVertex.label());
+  // draw shortest path and code on field then draw code for print
+  createFieldPdf('path', edges, true, goalVertex);
+  createCodePdf('code', goalVertex);
+}
