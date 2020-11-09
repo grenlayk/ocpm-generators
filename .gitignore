@@ -1,3 +1,5 @@
 .DS_Store
 test.pdf
 .vscode
+*.json
+node_modules/
