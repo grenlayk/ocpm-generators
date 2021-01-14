@@ -253,18 +253,24 @@ const renderInIframe = (pdfBytes, divName) => {
 
 // Create field pdf with weights and the shortest path
 async function createFieldPdf(divname, edges, drawShortest = false, goalVertex = null) {
-  const url = 'pdf/graph.pdf';
+  const url = '../pdf/graph.pdf';
   const pdfBytes = await fetchBinaryAsset(url);
   const pdfDoc = await PDFDocument.load(pdfBytes);
   const pages = pdfDoc.getPages();
   const font = await pdfDoc.embedFont(StandardFonts.Helvetica);
+
+  pdfDoc.setTitle('Field');
+  pdfDoc.setAuthor('mosrobotics');
+  
   // Modify pdf
   drawEdges(pages[0], font, edges);
   if (drawShortest) {
     drawCode(goalVertex, pages[0]);
     pathEdges = getShortestPathEdges(edges, goalVertex);
     drawEdges(pages[0], font, pathEdges, green = true);
+    pdfDoc.setTitle('Field with path');
   }
+
   // Add pdf to frame
   const pdfResultBytes = await pdfDoc.save();
   renderInIframe(pdfResultBytes, divname);
@@ -292,12 +298,16 @@ function drawCodePaper(goalVertex, page) {
 
 // Add code pdf to frame
 async function createCodePdf(filename, goalVertex) {
-  const url = 'pdf/senior-code-template.pdf';
+  const url = '../pdf/senior-code-template.pdf';
   const pdfBytes = await fetchBinaryAsset(url);
   const pdfDoc = await PDFDocument.load(pdfBytes);
   const pages = pdfDoc.getPages();
   const font = await pdfDoc.embedFont(StandardFonts.Helvetica);
   drawCodePaper(goalVertex, pages[0]);
+
+  pdfDoc.setTitle('Code');
+  pdfDoc.setAuthor('mosrobotics');
+
   const pdfResultBytes = await pdfDoc.save();
   renderInIframe(pdfResultBytes, filename);
 }
