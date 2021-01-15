@@ -17,6 +17,9 @@ const hLeftTopY = 2700; // for horizontal lines
 const vLeftTopX = 2740; // for vertical lines
 const vLeftTopY = 2430; // for vertical lines
 
+const greenColor = rgb(0.196078, 0.80392, 0.196078);
+
+
 class Vertex {
     constructor(id) {
         this.i = parseInt(id / xLabels.length);

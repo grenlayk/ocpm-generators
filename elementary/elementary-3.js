@@ -27,7 +27,7 @@ function drawVertices(vertices, page, font) {
         let x = vLeftTopX + cellSize * v.j;
         let y = hLeftTopY - cellSize * v.i;
         const text = "    ";
-        draw(page, font, text.toString(), x, y, true);
+        drawBox(page, x, y, greenColor);
     }
 }
 
