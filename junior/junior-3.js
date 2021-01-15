@@ -40,7 +40,7 @@ function getVertices() {
 
 
 function drawVertices(page, shift) {
-    let colors = [rgb(1, 0, 0), rgb(1, 1, 0), rgb(0.196078, 0.80392, 0.196078), rgb(0, 0, 1), rgb(1, 1, 1)];
+    let colors = [rgb(1, 0, 0), rgb(1, 1, 0), greenColor, rgb(0, 0, 1), rgb(1, 1, 1)];
     for (let k = shift; k < n; k++) {
         let x = vLeftTopX + cellSize * vs[k].j;
         let y = hLeftTopY - cellSize * vs[k].i;
