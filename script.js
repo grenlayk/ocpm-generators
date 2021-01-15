@@ -70,3 +70,16 @@ function draw(page, font, text, x, y, green = false) {
         color: rgb(0, 0, 0),
     })
 }
+
+function drawBox(page, x, y, color) {
+    // Draw a box around the string of text
+    page.drawRectangle({
+        x: x - 5,
+        y: y - 25,
+        width: 170,
+        height: 170,
+        color: color,
+        borderColor: rgb(0, 0, 0),
+        borderWidth: 1
+    })
+}
