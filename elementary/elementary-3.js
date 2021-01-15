@@ -2,20 +2,17 @@ let vs = null;
 
 function getGoalVertices() {
     let vertices = [];
-    let ids = [0, 0];
-    ids[0] = getRandomInt(0, numberOfCrosses - 1);
-    ids[1] = getRandomInt(0, numberOfCrosses - 2);
-    ids.sort();
-    if (ids[1] == ids[0]) {
-        ++ids[1];
-    }
-    ids.push(getRandomInt(0, numberOfCrosses - 3));
-    
-    if (ids[2] == ids[0]) {
-        ++ids[2];
-    }
-    if (ids[2] == ids[1]) {
-        ++ids[2];
+    let ids = [];
+    let n = 3;
+
+    for (let i = 0; i < n; i++) {
+        ids.sort();
+        ids.push(getRandomInt(0, numberOfCrosses - 1 - i));
+        for (let j = 0; j < i; ++j) {
+            if (ids[i] == ids[j]) {
+                ++ids[i];
+            }
+        }
     }
 
     for (let i = 0; i < 3; ++i) {
