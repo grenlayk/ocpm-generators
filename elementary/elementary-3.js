@@ -62,5 +62,5 @@ async function createField() {
 
 function refreshPage() {
     vs = null;
-    await createField();
+    createField();
 }
