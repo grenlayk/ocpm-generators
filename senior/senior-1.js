@@ -225,6 +225,7 @@ async function createCodePdf(filename, goalVertex) {
     const pdfDoc = await PDFDocument.load(pdfBytes);
     const pages = pdfDoc.getPages();
     const font = await pdfDoc.embedFont(StandardFonts.Helvetica);
+
     drawCodePaper(goalVertex, pages[0]);
 
     pdfDoc.setTitle('Code');
@@ -242,19 +243,19 @@ function refreshPage() {
 
 
 // create edges list and draw edges on the field
-function createField() {
+async function createField() {
     edges = createEdges();
-    createFieldPdf('field', edges);
+    await createFieldPdf('field', edges);
 }
 
-function createVertex() {
+async function createVertex() {
     if (edges == null) {
-        createField();
+        await createField();
     }
     // create goal vertex
     const goalVertex = getGoalVertex();
     console.log("Chosen vertex is " + goalVertex.label());
     // draw shortest path and code on field then draw code for print
-    createFieldPdf('path', edges, true, goalVertex);
-    createCodePdf('code', goalVertex);
+    await createFieldPdf('path', edges, true, goalVertex);
+    await createCodePdf('code', goalVertex);
 }
