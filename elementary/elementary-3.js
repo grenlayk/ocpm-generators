@@ -1,17 +1,25 @@
+let vs = null;
+
 function getGoalVertices() {
     let vertices = [];
-    while (vertices.length < 3) {
-        let vertex = new Vertex(getRandomInt(0, numberOfCrosses - 1));
-        let ok;
-        do {
-            ok = true;
-            for (v of vertices) {
-                if (v.id == vertex.id) {
-                    ok = false;
-                }
-            }
-        } while (!ok);
-        vertices.push(vertex);
+    let ids = [0, 0];
+    ids[0] = getRandomInt(0, numberOfCrosses - 1);
+    ids[1] = getRandomInt(0, numberOfCrosses - 2);
+    ids.sort();
+    if (ids[1] == ids[0]) {
+        ++ids[1];
+    }
+    ids.push(getRandomInt(0, numberOfCrosses - 3));
+    
+    if (ids[2] == ids[0]) {
+        ++ids[2];
+    }
+    if (ids[2] == ids[1]) {
+        ++ids[2];
+    }
+
+    for (let i = 0; i < 3; ++i) {
+        vertices[i] = new Vertex(ids[i]);
     }
     return vertices;
 }
@@ -43,14 +51,16 @@ async function createFieldPdf(filename, vertices) {
     renderInIframe(pdfResultBytes, filename);
 }
 
-
-function updateField() {
-    let vs = getGoalVertices();
-    const div = document.getElementById('dots');
-    div.innerHTML = "";
-    for (v of vs) {
-        console.log(v.label());
-        div.innerHTML += v.label() + " ";
+async function createField() {
+    if (vs == null) {
+        vs = getGoalVertices();
     }
-    createFieldPdf('field', vs);
+    let dots = document.getElementById('dots');
+    dots.innerText = vs[0].label() + "_" + vs[1].label() + "_" + vs[2].label();
+    await createFieldPdf('field', vs);
+}
+
+function refreshPage() {
+    vs = null;
+    await createField();
 }
