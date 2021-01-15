@@ -47,27 +47,26 @@ function draw(page, font, text, x, y, green = false) {
     const textSize = 150;
     const textWidth = font.widthOfTextAtSize(text, textSize);
     const textHeight = font.heightAtSize(textSize);
-  
+
     let backgroundColor = rgb(1, 1, 1);
-    if (green) { // let's color shortest path 
-      backgroundColor = rgb(0.1, 0.9, 0.1);
+    if (green) { // in case of green highlight
+        backgroundColor = rgb(0.196078, 0.80392, 0.196078);
     }
-  
+
     // Draw a box around the string of text
     page.drawRectangle({
-      x: x - 10,
-      y: y - 20,
-      width: textWidth + 20,
-      height: textHeight + 5,
-      color: backgroundColor,
+        x: x - 10,
+        y: y - 20,
+        width: textWidth + 20,
+        height: textHeight + 5,
+        color: backgroundColor,
     })
-  
+
     page.drawText(text, {
-      x: x,
-      y: y,
-      size: textSize,
-      font: font,
-      color: rgb(0, 0, 0),
+        x: x,
+        y: y,
+        size: textSize,
+        font: font,
+        color: rgb(0, 0, 0),
     })
 }
-  
