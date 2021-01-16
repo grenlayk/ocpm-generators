@@ -17,6 +17,22 @@ const hLeftTopY = 2700; // for horizontal lines
 const vLeftTopX = 2740; // for vertical lines
 const vLeftTopY = 2430; // for vertical lines
 
+// for code painting
+const lineX = 84;
+const lineY = 595;
+const bwcolor = [rgb(1, 1, 1), rgb(0, 0, 0)];
+const lineTopX = 1120;
+const lineTopY = 1325;
+
+// for code pdf
+const codeLineTopX = 38;
+const codeLineTopY = 740.9;
+const codeLineX = 534.5;
+const codeLineY = 72.1;
+
+const EPS = 2;
+const greenColor = rgb(0.196078, 0.80392, 0.196078);
+
 class Vertex {
     constructor(id) {
         this.i = parseInt(id / xLabels.length);
@@ -43,6 +59,10 @@ function getRandomInt(min, max) {
     return min + Math.floor(Math.random() * Math.floor(max - min));
 }
 
+function drawRect(page, x, y, width, height, color) {
+    page.drawRectangle({x, y, width, height, color});
+}
+
 function draw(page, font, text, x, y, green = false) {
     const textSize = 150;
     const textWidth = font.widthOfTextAtSize(text, textSize);
@@ -54,13 +74,7 @@ function draw(page, font, text, x, y, green = false) {
     }
 
     // Draw a box around the string of text
-    page.drawRectangle({
-        x: x - 10,
-        y: y - 20,
-        width: textWidth + 20,
-        height: textHeight + 5,
-        color: backgroundColor,
-    })
+    drawRect(page, x - 10, y - 20, textWidth + 20, textHeight + 5, backgroundColor);
 
     page.drawText(text, {
         x: x,
@@ -68,5 +82,18 @@ function draw(page, font, text, x, y, green = false) {
         size: textSize,
         font: font,
         color: rgb(0, 0, 0),
+    })
+}
+
+function drawBox(page, x, y, color) {
+    // Draw a box around the string of text
+    page.drawRectangle({
+        x: x - 5,
+        y: y - 25,
+        width: 170,
+        height: 170,
+        color: color,
+        borderColor: rgb(0, 0, 0),
+        borderWidth: 1
     })
 }

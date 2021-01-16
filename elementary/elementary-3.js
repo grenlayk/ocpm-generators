@@ -1,5 +1,10 @@
 let vs = null;
 
+function printVertices(vs) {
+    let dots = document.getElementById('dots');
+    dots.innerText = `Выбранные точки: ${vs[0].label()}, ${vs[1].label()}, ${vs[2].label()}`;
+}
+
 function getGoalVertices() {
     let vertices = [];
     let ids = [];
@@ -18,6 +23,8 @@ function getGoalVertices() {
     for (let i = 0; i < 3; ++i) {
         vertices[i] = new Vertex(ids[i]);
     }
+    
+    printVertices(vertices)
     return vertices;
 }
 
@@ -27,7 +34,7 @@ function drawVertices(vertices, page, font) {
         let x = vLeftTopX + cellSize * v.j;
         let y = hLeftTopY - cellSize * v.i;
         const text = "    ";
-        draw(page, font, text.toString(), x, y, true);
+        drawBox(page, x, y, greenColor);
     }
 }
 
@@ -52,8 +59,6 @@ async function createField() {
     if (vs == null) {
         vs = getGoalVertices();
     }
-    let dots = document.getElementById('dots');
-    dots.innerText = vs[0].label() + "_" + vs[1].label() + "_" + vs[2].label();
     await createFieldPdf('field', vs);
 }
 

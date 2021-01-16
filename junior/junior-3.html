@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="UTF-8" />
-    <title>ОЦПМ Младшая-3</title>
+    <title>ОЦПМ Средняя 3</title>
     <link rel="stylesheet" href="../style.css">
     </link>
     <script type="text/javascript" src="https://unpkg.com/pdf-lib/dist/pdf-lib.js"></script>
@@ -12,21 +12,31 @@
 
 <body onload=refreshPage()>
     <nav class="topnav">
-        <a href="../index.html" class="atopnav">Генераторы конфигурации полей Олимпиады ЦПМ</a>
+        <a href="../index.html" class="atopnav">
+            Генераторы конфигурации полей Олимпиады ЦПМ
+        </a>
     </nav>
     <div id="content">
-        Младшая 3. Цепочка
+        Средняя 3. Змейка
         <div>
             <button id="mybutton" onclick="refreshPage()">
                 Сгенерировать точки
             </button>
-        </div> 
+        </div>
         <div id="dots">
         </div>
+        <div>
+            Начальная расстановка элементов
+        </div>
         <iframe id="field"></iframe>
+        <div>
+            Верная расстановка элементов
+        </div>
+        <iframe id="correct"></iframe>
+        <iframe id="code"></iframe>
     </div>
 </body>
 <script type="text/javascript" src="../script.js"></script>
-<script type="text/javascript" src="elementary-3.js"></script>
+<script type="text/javascript" src="junior-3.js"></script>
 
 </html>
