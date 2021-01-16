@@ -1,6 +1,9 @@
 let vs = null;
-let n = 4;
+const n = 4;
 let lastColor = null;
+
+const cm = 28.345;
+const lineXcm = 33;
 
 function printVertices(vs) {
     let dots = document.getElementById('dots');
@@ -57,6 +60,22 @@ function drawVertices(page, shift) {
     }
 }
 
+// Draw code on field
+function drawCode(page) {
+    const code_colors = [0, 1, 0, 1, 0, 1];
+    let sum = 0;
+    drawRect(page, lineTopX, lineTopY, 841, lineY, bwcolor[0]);
+    for (let i = 0; i < code_colors.length; i++) {
+        let width = 2;
+        if (code_colors[i]) {
+            width = vs[1 + Math.floor(i/2)].j + 1;
+        }
+        drawRect(page, lineTopX + lineXcm * sum, lineTopY, 
+            width * lineXcm + EPS, lineY, bwcolor[code_colors[i]]);
+        sum += width;
+    }
+}
+
 // Add field pdf to frame
 async function createFieldPdf(filename, shift=0) {
     const url = '../pdf/graph.pdf';
@@ -64,6 +83,7 @@ async function createFieldPdf(filename, shift=0) {
     const pdfDoc = await PDFDocument.load(pdfBytes);
     const pages = pdfDoc.getPages();
 
+    drawCode(pages[0]);
     drawVertices(pages[0], shift);
 
     pdfDoc.setTitle('Field');
@@ -76,12 +96,46 @@ async function createFieldPdf(filename, shift=0) {
     renderInIframe(pdfResultBytes, filename);
 }
 
+
+// Draw code pdf to print
+function drawCodePaper(page) {
+    const code_colors = [0, 1, 0, 1, 0, 1];
+    let sum = 0;
+    drawRect(page, codeLineTopX, codeLineTopY - 649.5, codeLineX, 715, bwcolor[0]);
+    for (let i = 0; i < code_colors.length; i++) {
+        let width = 2;
+        if (code_colors[i]) {
+            width = vs[1 + Math.floor(i/2)].j + 1;
+        }
+        sum += width;
+        drawRect(page, codeLineTopX, codeLineTopY + codeLineY - sum * cm - 0.5,
+            codeLineX, width * cm + 0.3, bwcolor[code_colors[i]]);
+    }
+}
+
+// Add code pdf to frame
+async function createCodePdf(filename) {
+    const url = '../pdf/senior-code-template.pdf';
+    const pdfBytes = await fetchBinaryAsset(url);
+    const pdfDoc = await PDFDocument.load(pdfBytes);
+    const pages = pdfDoc.getPages();
+
+    drawCodePaper(pages[0]);
+
+    pdfDoc.setTitle('Code');
+    pdfDoc.setAuthor('mosrobotics');
+
+    const pdfResultBytes = await pdfDoc.save();
+    renderInIframe(pdfResultBytes, filename);
+}
+
 async function createField() {
     if (vs == null) {
         vs = getVertices();
     }
     await createFieldPdf('field', shift=0);
     await createFieldPdf('correct', shift=1);
+    await createCodePdf('code');
 }
 
 function refreshPage() {

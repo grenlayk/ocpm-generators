@@ -1,19 +1,6 @@
 const INF = 10000;
 const START_VERTEX = 14;
-const EPS = 2;
 
-// for code painting
-const lineX = 84;
-const lineY = 595;
-const color = [rgb(1, 1, 1), rgb(0, 0, 0)];
-const lineTopX = 1120;
-const lineTopY = 1325;
-
-// for code pdf
-const codeLineTopX = 38;
-const codeLineTopY = 740.9;
-const codeLineX = 534.5;
-const codeLineY = 72.1;
 
 let edges = null;
 
@@ -154,7 +141,7 @@ function getShortestPathEdges(edges, goalVertex) {
     return result;
 }
 
-
+// Draw code on field
 function drawCode(goalVertex, page) {
     const colors = [1, 0, 1];
     let id = (goalVertex.j + 1) * 10 + (goalVertex.i + 1);
@@ -162,13 +149,8 @@ function drawCode(goalVertex, page) {
         colors.push((id >> i) & 1);
     }
     for (let i = 0; i < colors.length; i++) {
-        page.drawRectangle({
-            x: lineTopX + lineX * i,
-            y: lineTopY,
-            width: lineX + EPS,
-            height: lineY,
-            color: color[colors[i]],
-        })
+        drawRect(page, lineTopX + lineX * i, lineTopY, lineX + EPS, 
+            lineY, color[colors[i]]);
     }
 }
 
@@ -207,13 +189,8 @@ function drawCodePaper(goalVertex, page) {
         colors.push((id >> i) & 1);
     }
     for (let i = 0; i < colors.length; i++) {
-        page.drawRectangle({
-            x: codeLineTopX,
-            y: codeLineTopY - i * codeLineY,
-            width: codeLineX,
-            height: codeLineY + 0.3,
-            color: color[colors[i]],
-        })
+        drawRect(page, codeLineTopX, codeLineTopY - i * codeLineY, 
+            codeLineX, codeLineY + 0.3, bwcolor[colors[i]]);
     }
 }
 
@@ -235,13 +212,6 @@ async function createCodePdf(filename, goalVertex) {
     renderInIframe(pdfResultBytes, filename);
 }
 
-
-function refreshPage() {
-    edges = null;
-    createVertex();
-}
-
-
 // create edges list and draw edges on the field
 async function createField() {
     edges = createEdges();
@@ -258,4 +228,9 @@ async function createVertex() {
     // draw shortest path and code on field then draw code for print
     await createFieldPdf('path', edges, true, goalVertex);
     await createCodePdf('code', goalVertex);
+}
+
+function refreshPage() {
+    edges = null;
+    createVertex();
 }
