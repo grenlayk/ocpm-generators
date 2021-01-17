@@ -150,7 +150,7 @@ function drawCode(goalVertex, page) {
     }
     for (let i = 0; i < colors.length; i++) {
         drawRect(page, lineTopX + lineX * i, lineTopY, lineX + EPS, 
-            lineY, color[colors[i]]);
+            lineY, bwcolor[colors[i]]);
     }
 }
 
