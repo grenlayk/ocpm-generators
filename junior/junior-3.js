@@ -54,15 +54,15 @@ function drawCubes(page, shift, font) {
         const textWidth = font.widthOfTextAtSize(letters[id], textSize);
         const dt = (150 - textWidth) / 2 + 5;
         drawBox(page, x, y, colors[id]);
-        drawText(page, letters[id], x + dt, y, textSize, font, rgb(0,0,0));
+        drawText(page, letters[id], x + dt, y + 4, textSize, font, rgb(0,0,0));
     }
     if (shift) {
         let x = 500;
         let y = 1400;
         drawBox(page, x, y, colors[lastColor]);
-        const textWidth = font.widthOfTextAtSize(letters[id], textSize);
+        const textWidth = font.widthOfTextAtSize(letters[lastColor], textSize);
         const dt = (150 - textWidth) / 2 + 5;
-        drawText(page, letters[lastColor], x + dt, y, textSize, font, rgb(0,0,0));
+        drawText(page, letters[lastColor], x + dt, y + 4, textSize, font, rgb(0,0,0));
     }
 }
 
