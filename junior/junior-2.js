@@ -9,6 +9,11 @@ const yHight = 1605 - 24;
 const dt = 175.7;
 const cubeWidth = 142.5;//95
 
+function printColors() {
+    let label = document.getElementById('label');
+    label.innerText = `Выбранные цвета: ${names[chosen_colors[0]]}, ${names[chosen_colors[1]]}`;
+}
+
 function drawCubes(page, font) {
     const textSize = 120;
     for (let i = 0; i < chosen; ++i) {
@@ -60,7 +65,8 @@ async function createField() {
         for (let i = 0; i < 10; ++i) {
             col_ids.sort(() => Math.random() - 0.5);
         }
-        chosen_colors.sort(() => Math.random() - 0.5)
+        chosen_colors.sort(() => Math.random() - 0.5);
+        printColors();
     }
     await createFieldPdf('field');
 }
