@@ -10,12 +10,15 @@ const dt = 175.7;
 const cubeWidth = 142.5;//95
 
 function drawCubes(page, font) {
+    const textSize = 120;
     for (let i = 0; i < chosen; ++i) {
         let x = leftCorner + dt * idx[i];
         let y = yHight;
-        let curId = chosen_colors[col_ids[i]];
-        drawBox(page, x, y, colors[curId], cubeWidth);
-        drawText(page, letters[curId], x + 20, y - 3, 120, font, blackColor);
+        let id = chosen_colors[col_ids[i]];
+        const textWidth = font.widthOfTextAtSize(letters[id], textSize);
+        const del = (cubeWidth - textWidth) / 2 - 6;
+        drawBox(page, x, y, colors[id], cubeWidth);
+        drawText(page, letters[id], x + del, y, textSize, font, blackColor);
     }
 }
 
