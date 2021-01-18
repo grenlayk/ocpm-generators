@@ -15,7 +15,7 @@ function getVertices() {
     let ids = [14];
 
     for (let i = 1; i < n; i++) {
-        ids.sort();
+        ids.sort((a, b) => a - b);;
         ids.push(getRandomInt(0, numberOfCrosses - 1 - i));
         for (let j = 0; j < i; ++j) {
             if (ids[i] == ids[j]) {
@@ -43,7 +43,6 @@ function getVertices() {
 
 
 function drawVertices(page, shift) {
-    let colors = [rgb(1, 0, 0), rgb(1, 1, 0), greenColor, rgb(0, 0, 1), rgb(1, 1, 1)];
     for (let k = shift; k < n; k++) {
         let x = vLeftTopX + cellSize * vs[k].j;
         let y = hLeftTopY - cellSize * vs[k].i;
