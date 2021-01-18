@@ -37,8 +37,9 @@ const yellowColor = rgb(1, 1, 0);
 const blueColor = rgb(0.3, 0.3, 0.8);
 const whiteColor = rgb(1, 1, 1);
 const blackColor = rgb(0, 0, 0);
-let colors = [redColor, yellowColor, greenColor, blueColor, whiteColor];
-let letters = ["R", "Y", "G", "B", "W"];
+const colors = [redColor, yellowColor, greenColor, blueColor, whiteColor];
+const letters = ["R", "Y", "G", "B", "W"];
+const names = ["красный", "желтый", "зеленый", "синий", "белый"];
 
 class Vertex {
     constructor(id) {
