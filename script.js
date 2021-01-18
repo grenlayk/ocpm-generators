@@ -32,11 +32,13 @@ const codeLineY = 72.1;
 
 const EPS = 2;
 const greenColor = rgb(0.196078, 0.80392, 0.196078);
-const redColor = rgb(1, 0, 0);
+const redColor = rgb(1, 0.2, 0.2);
 const yellowColor = rgb(1, 1, 0);
-const blueColor = rgb(0, 0, 1);
+const blueColor = rgb(0.3, 0.3, 0.8);
 const whiteColor = rgb(1, 1, 1);
+const blackColor = rgb(0, 0, 0);
 let colors = [redColor, yellowColor, greenColor, blueColor, whiteColor];
+let letters = ["R", "Y", "G", "B", "W"];
 
 class Vertex {
     constructor(id) {
@@ -83,6 +85,10 @@ function getCnk(n, k) {
     return ids;
 }
 
+function drawText(page, text, x, y, size, font, color) {
+    page.drawText(text, {x, y, size, font, color});
+}
+
 function draw(page, font, text, x, y, green = false) {
     const textSize = 150;
     const textWidth = font.widthOfTextAtSize(text, textSize);
@@ -96,13 +102,7 @@ function draw(page, font, text, x, y, green = false) {
     // Draw a box around the string of text
     drawRect(page, x - 10, y - 20, textWidth + 20, textHeight + 5, backgroundColor);
 
-    page.drawText(text, {
-        x: x,
-        y: y,
-        size: textSize,
-        font: font,
-        color: rgb(0, 0, 0),
-    })
+    drawText(page, text, x, y, textSize, font, rgb(0, 0, 0));
 }
 
 function drawBox(page, x, y, color, sz=170) {
