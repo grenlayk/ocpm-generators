@@ -7,18 +7,7 @@ function printVertices(vs) {
 
 function getGoalVertices() {
     let vertices = [];
-    let ids = [];
-    let n = 3;
-
-    for (let i = 0; i < n; i++) {
-        ids.sort();
-        ids.push(getRandomInt(0, numberOfCrosses - 1 - i));
-        for (let j = 0; j < i; ++j) {
-            if (ids[i] == ids[j]) {
-                ++ids[i];
-            }
-        }
-    }
+    let ids = getCnk(numberOfCrosses, 3);
 
     for (let i = 0; i < 3; ++i) {
         vertices[i] = new Vertex(ids[i]);
