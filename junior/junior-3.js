@@ -42,20 +42,27 @@ function getVertices() {
 }
 
 
-function drawVertices(page, shift) {
+function drawCubes(page, shift, font) {
+    const textSize = 150;
     for (let k = shift; k < n; k++) {
         let x = vLeftTopX + cellSize * vs[k].j;
         let y = hLeftTopY - cellSize * vs[k].i;
-        let color = colors[vs[(k + 1 - shift) % n].i];
+        let id = vs[(k + 1 - shift) % n].i;
         if (shift == 0 && k == n - 1) {
-            color = colors[lastColor];
+            id = lastColor;
         }
-        drawBox(page, x, y, color);
+        const textWidth = font.widthOfTextAtSize(letters[id], textSize);
+        const dt = (150 - textWidth) / 2 + 5;
+        drawBox(page, x, y, colors[id]);
+        drawText(page, letters[id], x + dt, y, textSize, font, rgb(0,0,0));
     }
     if (shift) {
         let x = 500;
         let y = 1400;
         drawBox(page, x, y, colors[lastColor]);
+        const textWidth = font.widthOfTextAtSize(letters[id], textSize);
+        const dt = (150 - textWidth) / 2 + 5;
+        drawText(page, letters[lastColor], x + dt, y, textSize, font, rgb(0,0,0));
     }
 }
 
@@ -81,9 +88,10 @@ async function createFieldPdf(filename, shift=0) {
     const pdfBytes = await fetchBinaryAsset(url);
     const pdfDoc = await PDFDocument.load(pdfBytes);
     const pages = pdfDoc.getPages();
+    const font = await pdfDoc.embedFont(StandardFonts.Helvetica);
 
     drawCode(pages[0]);
-    drawVertices(pages[0], shift);
+    drawCubes(pages[0], shift, font);
 
     pdfDoc.setTitle('Field');
     if (shift) {
