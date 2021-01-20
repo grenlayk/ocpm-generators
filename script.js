@@ -75,7 +75,7 @@ function getCnk(n, k) {
     let ids = [];
     for (let i = 0; i < k; i++) {
         ids.sort((a, b) => a - b);
-        ids.push(getRandomInt(0, n - i));
+        ids.push(getRandomInt(0, n - i - 1));
         for (let j = 0; j < i; ++j) {
             if (ids[i] == ids[j]) {
                 ++ids[i];
