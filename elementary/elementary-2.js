@@ -1,6 +1,6 @@
 let sizes = null;
 let pos = [1, 0];
-let ids = null;
+let idxs = null;
 const n = 3;
 
 const xCorner = 500;
@@ -17,7 +17,7 @@ const resYDt = [-428, 428];
 function drawCubes(page, font) {
     for (let i = 0; i < n; ++i) {
         let x = xCorner;
-        let y = yCorner[pos[i]] + ids[i] * dt[pos[i]];
+        let y = yCorner[pos[i]] + idxs[i] * dt[pos[i]];
         let num = sizes[i] * 4 + 4;
         drawBox(page, x, y, redColor, cubeSize);
         drawText(page, num.toString(), x + 30, y + 2, textSize, font, blackColor);
@@ -26,7 +26,7 @@ function drawCubes(page, font) {
 
 function drawCorrectCubes(page, font) {
     for (let i = 0; i < n; ++i) {
-        let x = resXCorner + ids[i] * resDt;
+        let x = resXCorner + idxs[i] * resDt;
         let y = resYCorner[pos[i]] + (1 + sizes[i]) * resYDt[pos[i]];
         let num = sizes[i] * 4 + 4;
         drawBox(page, x, y, redColor, cubeSize);
@@ -66,7 +66,12 @@ async function createField() {
         if (pos[n - 1] == 1) {
             pos.sort((a, b) => a - b);
         }
-        ids = getCnk(6, 1).concat(getCnk(6, 2));
+        idxs = [getRandomInt(0, 5)];
+        let arr = getCnk(6, 2);
+        console.log(arr);
+        idxs = idxs.concat(arr);
+
+        console.log(idxs, sizes, pos);
     }
     await createFieldPdf('field');
     await createFieldPdf('correct', true);
