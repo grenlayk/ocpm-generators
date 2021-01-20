@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8" />
+    <title>ОЦПМ Младшая 2</title>
+    <link rel="stylesheet" href="../style.css">
+    </link>
+    <script type="text/javascript" src="https://unpkg.com/pdf-lib/dist/pdf-lib.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300&display=swap" rel="stylesheet">
+</head>
+
+<body onload="refreshPage()">
+    <nav class="topnav">
+        <a href="../index.html" class="atopnav">Генераторы конфигурации полей Олимпиады ЦПМ</a>
+    </nav>
+    <div id="content">
+        Младшая 2. Координатная плоскость
+        <div>
+            <button id="mybutton" onclick="refreshPage()">
+                Сгенерировать поле
+            </button>
+        </div> 
+        <div>
+            Начальная расстановка
+        </div>
+        <iframe id="field"></iframe>
+        <div>
+            Верная расстановка
+        </div>
+        <iframe id="correct"></iframe>
+    </div>
+</body>
+<script type="text/javascript" src="../script.js"></script>
+<script type="text/javascript" src="elementary-2.js"></script>
+
+</html>
