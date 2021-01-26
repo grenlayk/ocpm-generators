@@ -45,7 +45,7 @@ function createEdges() {
         for (let uId = vId + 1; uId < numberOfCrosses; uId++) {
             const u = new Vertex(uId);
             if (isNeighbor(v, u)) {
-                edges.push(new Edge(v, u, getRandomInt(10, 50)));
+                edges.push(new Edge(v, u, getRandomInt(10, 51)));
             }
         }
     }
@@ -70,9 +70,9 @@ function createEdgesTable(edges) {
 
 
 function getGoalVertex() {
-    let vertex = new Vertex(getRandomInt(0, numberOfCrosses - 1));
+    let vertex = new Vertex(getRandomInt(0, numberOfCrosses));
     while (vertex.i == 2 && vertex.j < 5 || vertex.j == 0) {
-        vertex = new Vertex(getRandomInt(0, numberOfCrosses - 1));
+        vertex = new Vertex(getRandomInt(0, numberOfCrosses));
     }
     return vertex;
 }

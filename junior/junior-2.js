@@ -44,28 +44,35 @@ async function createFieldPdf(filename) {
     renderInIframe(pdfResultBytes, filename);
 }
 
-function add(num) {
-    let cnt = getRandomInt(2, 4);
-    if (cnt >= 4) {
-        cnt += 2;
+function add(num, mx=4) {
+    let cnt = getRandomInt(1, mx + 1);
+    if (cnt == 4) {
+        cnt = 6;
     }
     for (let i = 0; i < cnt; ++i) {
         col_ids.push(num);
     }
+    col_ids.shuffle();
 }
 
 async function createField() {
     if (idx == null) {
         col_ids = [0, 0, 0, 0, 0, 1, 1, 1, 1];
-        chosen_colors = [0, 1, 2, 3];
+        chosen_colors = [0, 1, 2, 3, 5];
         add(2);
         add(3);
+        let border = Math.min(total - col_ids.length, 6);
+        if (border == 4 || border == 5) {
+            border = 3;
+        }
+        add(4, border);
         chosen = col_ids.length;
         idx = getCnk(total, chosen);
-        for (let i = 0; i < 10; ++i) {
-            col_ids.sort(() => Math.random() - 0.5);
-        }
-        chosen_colors.sort(() => Math.random() - 0.5);
+        console.log(idx);
+        console.log(col_ids);
+
+
+        chosen_colors.shuffle();
         printColors();
     }
     await createFieldPdf('field');
