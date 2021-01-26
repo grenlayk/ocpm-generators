@@ -73,7 +73,7 @@ const renderInIframe = (pdfBytes, divName) => {
 };
 
 function getRandomInt(min, max) {
-    return min + Math.floor(Math.random() * Math.floor(max - min) - 0.5);
+    return min + Math.floor(Math.random() * Math.floor(max - min));
 }
 
 function drawRect(page, x, y, width, height, color) {
