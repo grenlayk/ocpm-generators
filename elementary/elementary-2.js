@@ -19,7 +19,7 @@ function drawCubes(page, font) {
         let x = xCorner;
         let y = yCorner[pos[i]] + idxs[i] * dt[pos[i]];
         let num = sizes[i] * 4 + 4;
-        drawBox(page, x, y, redColor, cubeSize);
+        drawBox(page, x, y, colors[sizes[i] + 1], cubeSize);
         drawText(page, num.toString(), x + 30, y + 2, textSize, font, blackColor);
     }
 }
@@ -27,9 +27,9 @@ function drawCubes(page, font) {
 function drawCorrectCubes(page, font) {
     for (let i = 0; i < n; ++i) {
         let x = resXCorner + idxs[i] * resDt;
-        let y = resYCorner[pos[i]] + (1 + sizes[i]) * resYDt[pos[i]];
+        let y = resYCorner[pos[i]] + (sizes[i]) * resYDt[pos[i]];
         let num = sizes[i] * 4 + 4;
-        drawBox(page, x, y, redColor, cubeSize);
+        drawBox(page, x, y, colors[sizes[i] + 1], cubeSize);
         drawText(page, num.toString(), x + 30, y + 2, textSize, font, blackColor);
     }
 }
