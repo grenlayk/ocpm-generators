@@ -31,15 +31,15 @@ const codeLineX = 534.5;
 const codeLineY = 72.1;
 
 const EPS = 2;
-const greenColor = rgb(0.196078, 0.80392, 0.196078);
-const redColor = rgb(1, 0.2, 0.2);
-const yellowColor = rgb(1, 1, 0);
-const blueColor = rgb(0.3, 0.3, 0.8);
+const greenColor = rgb(0, 0.801, 0);//rgb(0.196078, 0.80392, 0.196078);
+const redColor = rgb(1, 0.199, 0.238);//rgb(1, 0.2, 0.2);
+const yellowColor = rgb(1, 1, 0.199); //rgb(1, 1, 0);
+const blueColor = rgb(0, 0.5, 1);//rgb(0.3, 0.3, 0.8);
 const whiteColor = rgb(1, 1, 1);
 const blackColor = rgb(0, 0, 0);
-const colors = [redColor, yellowColor, greenColor, blueColor, whiteColor];
-const letters = ["R", "Y", "G", "B", "W"];
-const names = ["красный", "желтый", "зеленый", "синий", "белый"];
+const colors = [redColor, yellowColor, greenColor, blueColor, whiteColor, blackColor];
+const letters = ["R", "Y", "G", "B", "W", "B"];
+const names = ["красный", "желтый", "зеленый", "синий", "белый", "черный"];
 
 class Vertex {
     constructor(id) {
@@ -53,6 +53,15 @@ class Vertex {
     }
 }
 
+Array.prototype.shuffle = function() {
+    let m = this.length, i;
+    while (m) {
+        i = (Math.random() * m--) >>> 0;
+        [this[m], this[i]] = [this[i], this[m]]
+    }
+    return this;
+}
+
 const fetchBinaryAsset = (asset) =>
     fetch(`${asset}`).then((res) => res.arrayBuffer());
 
@@ -64,7 +73,7 @@ const renderInIframe = (pdfBytes, divName) => {
 };
 
 function getRandomInt(min, max) {
-    return min + Math.round(Math.random() * Math.floor(max - min));
+    return min + Math.floor(Math.random() * Math.floor(max - min));
 }
 
 function drawRect(page, x, y, width, height, color) {
@@ -75,9 +84,9 @@ function getCnk(n, k) {
     let ids = [];
     for (let i = 0; i < k; i++) {
         ids.sort((a, b) => a - b);
-        ids.push(getRandomInt(0, n - i - 1));
+        ids.push(getRandomInt(0, n - i));
         for (let j = 0; j < i; ++j) {
-            if (ids[i] == ids[j]) {
+            if (ids[i] >= ids[j]) {
                 ++ids[i];
             }
         }

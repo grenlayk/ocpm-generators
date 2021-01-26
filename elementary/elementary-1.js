@@ -43,7 +43,7 @@ async function createField() {
     if (idx == null) {
         idx = getCnk(total, chosen);
         chosen_colors  = getCnk(4, 2);
-        col_ids.sort(() => Math.random() - 0.5);
+        col_ids.shuffle();
     }
     await createFieldPdf('field');
 }

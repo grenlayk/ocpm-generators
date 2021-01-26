@@ -24,7 +24,7 @@ function getVertices() {
         }
     }
 
-    ids.sort(() => Math.random() - 0.5);
+    ids.shuffle();
     for (let i = n - 1; i >= 1; --i) {
         if (ids[i] == 14) {
             ids[i] = ids[i - 1];
@@ -147,6 +147,6 @@ async function createField() {
 
 function refreshPage() {
     vs = null;
-    lastColor = getRandomInt(0, n);
+    lastColor = getRandomInt(0, n + 1);
     createField();
 }

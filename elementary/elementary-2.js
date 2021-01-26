@@ -60,13 +60,13 @@ async function createField() {
     if (sizes == null) {
         sizes = [];
         for (let i = 0; i < n; ++i) {
-            sizes.push(getRandomInt(0, 1));
+            sizes.push(getRandomInt(0, 2));
         }
-        pos.push(getRandomInt(0, 1));
+        pos.push(getRandomInt(0, 2));
         if (pos[n - 1] == 1) {
             pos.sort((a, b) => a - b);
         }
-        idxs = [getRandomInt(0, 5)];
+        idxs = [getRandomInt(0, 6)];
         let arr = getCnk(6, 2);
         console.log(arr);
         idxs = idxs.concat(arr);
