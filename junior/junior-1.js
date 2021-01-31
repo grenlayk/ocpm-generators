@@ -3,9 +3,22 @@ const R = 1; // right
 const D = 2; // down
 const L = 3; // left
 
+const total = 10;
+
 let graph = [];
 let seq = [];
 let finish = null;
+let dir = null;
+
+const arrows = ["↑", "↱", "↶", "↰"];
+const tcolors = [greyColor, blueColor, redColor, yellowColor];
+const tletters = [" ", "B", "R", "Y"];
+
+
+const leftCorner = 1080;
+const yHight = 5826;
+const dt = 133;
+const cubeWidth = 125;
 
 class GVertex {
     constructor(id) {
@@ -61,21 +74,75 @@ function buildGraph() {
     addEdges(9, 12, R, U);
 }
 
+function printSeq() {
+    let label = document.getElementById('label');
+    let str = " ";
+    for (c of seq) {
+        str += arrows[c].toString() + " ";
+    }
+    label.innerText = `Последовательность: ${str}`;
+}
+
+function drawCubes(page, font) {
+    const textSize = 120;
+    for (let i = 0; i < total; ++i) {
+        let x = leftCorner + dt * i;
+        let y = yHight;
+        let id = seq[i];
+        const textWidth = font.widthOfTextAtSize(tletters[id], textSize);
+        const del = (cubeWidth - textWidth) / 2 - 6;
+        drawBox(page, x, y, tcolors[id], cubeWidth);
+        drawText(page, tletters[id], x + del, y, textSize, font, blackColor);
+    }
+}
+
+// Add field pdf to frame
+async function createFieldPdf(filename) {
+    const url = '../pdf/path.pdf';
+    const pdfBytes = await fetchBinaryAsset(url);
+    const pdfDoc = await PDFDocument.load(pdfBytes);
+    const pages = pdfDoc.getPages();
+    const font = await pdfDoc.embedFont(StandardFonts.Helvetica);
+
+    drawCubes(pages[0], font);
+
+    pdfDoc.setTitle('Field');
+    pdfDoc.setAuthor('mosrobotics');
+
+    const pdfResultBytes = await pdfDoc.save();
+    renderInIframe(pdfResultBytes, filename);
+}
+
 
 function getSequence() {
-    let curd = 3;
     finish = 0;
+    dir = 3;
     seq = [];
-    for (let i = 0; i < 8; ++i) {
+    for (let i = 0; i < total; ++i) {
         let sz = graph[finish].edges.length;
         let id = getRandomInt(0, sz);
         let e = graph[finish].edges[id];
-        seq.push((e.vdir - curd + 6) % 4);
+        seq.push((e.vdir - dir + 6) % 4);
         finish = e.to;
-        curd = e.todir;
+        dir = e.todir;
     }
+    printSeq();
     console.log(seq);
-    console.log(finish);
+}
+
+async function createField() {
+    if (finish == null) {
+        getSequence();
+    }
+    await createFieldPdf('field');
+}
+
+
+function refreshPage() {
+    buildGraph();
+    finish = null;
+    dir = null;
+    createField();
 }
 
 

@@ -37,6 +37,7 @@ const yellowColor = rgb(1, 1, 0.199); //rgb(1, 1, 0);
 const blueColor = rgb(0, 0.5, 1);//rgb(0.3, 0.3, 0.8);
 const whiteColor = rgb(1, 1, 1);
 const blackColor = rgb(0, 0, 0);
+const greyColor = rgb(0.6, 0.6, 0.6);
 const colors = [redColor, yellowColor, greenColor, blueColor, whiteColor, blackColor];
 const letters = ["R", "Y", "G", "B", "W", "B"];
 const names = ["красный", "желтый", "зеленый", "синий", "белый", "черный"];
