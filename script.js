@@ -68,7 +68,13 @@ const fetchBinaryAsset = (asset) =>
 
 
 const renderInIframe = (pdfBytes, divName) => {
-    const blob = new Blob([pdfBytes], { type: 'application/pdf' });
+    const blob = new Blob([pdfBytes], { type: 'application/pdf', 
+        view: 'Fit', 
+        scrollbars: '0', 
+        toolbar: '0', 
+        statusbar: '0', 
+        navpanes: '0' 
+    });
     const blobUrl = URL.createObjectURL(blob);
     document.getElementById(divName).src = blobUrl;
 };
