@@ -30,12 +30,13 @@ let coords = [[], []];
 
 
 function choosePositions(i=0) {
-    coords[i] = getCnk(6, 3);
+    coords[1 - i] = getCnk(6, 3);
     let code = 0;
-    for (let id of coords[i]) {
+    for (let id of coords[1 - i]) {
         code += Math.pow(2, id);
     }
     let deg = 27;
+    console.log(code);
     while (deg > 0) {
         seq.push(Math.floor(code / deg));
         code = code % deg;
@@ -49,6 +50,7 @@ function createSeq() {
     seq.push(3);
     seq.push(3);
     choosePositions(1);
+    seq.reverse();
 }
 
 
