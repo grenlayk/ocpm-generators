@@ -13,9 +13,9 @@ let dir = null;
 const arrows = ["↑", "↱", "↶", "↰"];
 const tcolors = [greyColor, blueColor, redColor, yellowColor];
 const tletters = [" ", "B", "R", "Y"];
-
-const finishx = [2680, 5310, 6295, 5310, 2680, 3752, 345, 1230, 2610, 3752, 345, 3752, 5765];
-const finishy = [6200, 4790, 4790, 6320, 4785, 3165, 2790, 2790, 1755, 1755, 700, 370, 370];
+//                  0     1     2     3     4     5     6     7     8     9    10    11    12
+const finishx = [2680, 5310, 6295, 5310, 2680, 3752,  345, 1230, 2610, 3752,  345, 3752, 5765];
+const finishy = [6200, 4790, 4790, 6320, 4785, 3165, 2790, 2790, 1755, 1755,  700,  370,  370];
 
 const leftCorner = 1080;
 const yHight = 5826;

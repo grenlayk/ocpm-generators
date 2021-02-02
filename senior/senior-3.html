@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8" />
+    <title>ОЦПМ Старшая 3</title>
+    <link rel="stylesheet" href="../style.css">
+    </link>
+    <script type="text/javascript" src="https://unpkg.com/pdf-lib/dist/pdf-lib.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300&display=swap" rel="stylesheet">
+</head>
+
+<body onload="refreshPage()">
+    <nav class="topnav">
+        <a href="../index.html" class="atopnav">Генераторы конфигурации полей Олимпиады ЦПМ</a>
+    </nav>
+    <div id="content">
+        Старшая 3. Локализация
+        <div>
+            <button id="mybutton" onclick="refreshPage()">
+                Сгенерировать поле
+            </button>
+        </div> 
+        <div id="label">
+        </div>
+        <div>
+            Начальная расстановка элементов
+        </div>
+        <iframe id="field"></iframe>
+        <div>
+            Верная расстановка элементов
+        </div>
+        <iframe id="correct"></iframe>
+    </div>
+</body>
+<script type="text/javascript" src="../script.js"></script>
+<script type="text/javascript" src="senior-3.js"></script>
+
+</html>
