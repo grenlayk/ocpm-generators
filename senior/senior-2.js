@@ -21,7 +21,7 @@ function genPoints() {
 // print distance to the target
 function printDistance() {
     let label = document.getElementById('label');
-    label.innerText = `Расстрояние до мишени: ${distance}`;
+    label.innerText = `Расстояние до мишени: ${distance}`;
 }
 
 // print chosen points

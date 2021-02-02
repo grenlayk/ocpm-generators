@@ -1,7 +1,6 @@
 const INF = 10000;
 const START_VERTEX = 14;
 
-
 let edges = null;
 
 class Edge {
@@ -20,7 +19,7 @@ class Edge {
     }
 }
 
-
+//  trigger browser to download edges list
 function downloadEdges() {
     let edgesData = [];
     for (const edge of edges) {
@@ -33,18 +32,19 @@ function downloadEdges() {
 }
 
 
-function isNeighbor(v, u) {
+//  check if vertices are neighbors or not
+function isNeighbors(v, u) {
     return Math.abs(v.i - u.i) + Math.abs(v.j - u.j) == 1;
 }
 
-
+//  add edges to the graph
 function createEdges() {
     let edges = [];
     for (let vId = 0; vId < numberOfCrosses; vId++) {
         const v = new Vertex(vId);
         for (let uId = vId + 1; uId < numberOfCrosses; uId++) {
             const u = new Vertex(uId);
-            if (isNeighbor(v, u)) {
+            if (isNeighbors(v, u)) {
                 edges.push(new Edge(v, u, getRandomInt(10, 51)));
             }
         }
@@ -52,7 +52,7 @@ function createEdges() {
     return edges;
 }
 
-
+//  convert edges list to table
 function createEdgesTable(edges) {
     const edgesTable = new Array(numberOfCrosses);
     for (let i = 0; i < numberOfCrosses; i++) {
@@ -69,7 +69,8 @@ function createEdgesTable(edges) {
 }
 
 
-function getGoalVertex() {
+//  choose destination
+function chooseVertex() {
     let vertex = new Vertex(getRandomInt(0, numberOfCrosses));
     while (vertex.i == 2 && vertex.j < 5 || vertex.j == 0) {
         vertex = new Vertex(getRandomInt(0, numberOfCrosses));
@@ -78,6 +79,7 @@ function getGoalVertex() {
 }
 
 
+// draw weights of edges
 function drawEdges(firstPage, font, edges, green = false) {
     for (edge of edges) {
         let x = 0, y = 0;
@@ -93,7 +95,7 @@ function drawEdges(firstPage, font, edges, green = false) {
     }
 }
 
-
+// find shortest path
 function getShortestPathEdges(edges, goalVertex) {
     // init
     const startVertex = new Vertex(START_VERTEX);
@@ -115,7 +117,7 @@ function getShortestPathEdges(edges, goalVertex) {
         isUsed[id] = true;
         for (let j = 0; j < numberOfCrosses; j++) {
             const otherVertex = new Vertex(j);
-            if (isNeighbor(currentVertex, otherVertex) && distance[j] > distance[id] + w[j][id] && !isUsed[j]) {
+            if (isNeighbors(currentVertex, otherVertex) && distance[j] > distance[id] + w[j][id] && !isUsed[j]) {
                 distance[j] = distance[id] + w[j][id];
                 parent[j] = currentVertex;
             }
@@ -163,7 +165,7 @@ async function createFieldPdf(divname, edges, drawShortest = false, goalVertex =
     const pages = pdfDoc.getPages();
     const font = await pdfDoc.embedFont(StandardFonts.Helvetica);
 
-    pdfDoc.setTitle('Field');
+    pdfDoc.setTitle('Senior-1-edges');
     pdfDoc.setAuthor('mosrobotics');
 
     // Modify pdf
@@ -172,7 +174,7 @@ async function createFieldPdf(divname, edges, drawShortest = false, goalVertex =
         drawCode(goalVertex, pages[0]);
         pathEdges = getShortestPathEdges(edges, goalVertex);
         drawEdges(pages[0], font, pathEdges, green = true);
-        pdfDoc.setTitle('Field with path');
+        pdfDoc.setTitle('Senior-1-path');
     }
 
     // Add pdf to frame
@@ -205,7 +207,7 @@ async function createCodePdf(filename, goalVertex) {
 
     drawCodePaper(goalVertex, pages[0]);
 
-    pdfDoc.setTitle('Code');
+    pdfDoc.setTitle('Senior-1-code');
     pdfDoc.setAuthor('mosrobotics');
 
     const pdfResultBytes = await pdfDoc.save();
@@ -222,9 +224,8 @@ async function createVertex() {
     if (edges == null) {
         await createField();
     }
-    // create goal vertex
-    const goalVertex = getGoalVertex();
-    console.log("Chosen vertex is " + goalVertex.label());
+    // choose goal vertex
+    const goalVertex = chooseVertex();
     // draw shortest path and code on field then draw code for print
     await createFieldPdf('path', edges, true, goalVertex);
     await createCodePdf('code', goalVertex);

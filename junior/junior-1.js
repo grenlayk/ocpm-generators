@@ -2,25 +2,24 @@ const U = 0; // up
 const R = 1; // right
 const D = 2; // down
 const L = 3; // left
-
-const total = 10;
+const N = 10;
 
 let graph = [];
 let seq = [];
 let finish = null;
 let dir = null;
 
-const arrows = ["↑", "↱", "↶", "↰"];
-const tcolors = [greyColor, blueColor, redColor, yellowColor];
-const tletters = [" ", "B", "R", "Y"];
-//                  0     1     2     3     4     5     6     7     8     9    10    11    12
-const finishx = [2680, 5310, 6295, 5310, 2680, 3752,  345, 1230, 2610, 3752,  345, 3752, 5765];
-const finishy = [6200, 4790, 4790, 6320, 4785, 3165, 2790, 2790, 1755, 1755,  700,  370,  370];
+const ARROW = ["↑", "↱", "↶", "↰"];
+const C_COLORS = [greyColor, blueColor, redColor, yellowColor];
+const C_LETTERS = [" ", "B", "R", "Y"];
+//                   0     1     2     3     4     5     6     7     8     9    10    11    12
+const FINISH_X = [2680, 5310, 6295, 5310, 2680, 3752,  345, 1230, 2610, 3752,  345, 3752, 5765];
+const FINISH_Y = [6200, 4790, 4790, 6320, 4785, 3165, 2790, 2790, 1755, 1755,  700,  370,  370];
 
-const leftCorner = 1080;
-const yHight = 5826;
-const dt = 133;
-const cubeWidth = 125;
+const X_CORNER = 1080;
+const Y_CORNER = 5826;
+const DLT = 133;
+const C_WIDTH = 125;
 
 class GVertex {
     constructor(id) {
@@ -45,15 +44,17 @@ class GEdge {
     }
 }
 
+// add edge vice versa
 function addEdges(v, to, d1, d2) {
     graph[v].addEdge(new GEdge(to, d1, d2));
     graph[to].addEdge(new GEdge(v, d2, d1));
 }
 
+// create graph
 function buildGraph() {
     graph = [];
-    let total = 13;
-    for (let i = 0; i < total; ++i) {
+    let M = 13;
+    for (let i = 0; i < M; ++i) {
         graph.push(new GVertex(i));
     }
     // Edges list
@@ -76,27 +77,29 @@ function buildGraph() {
     addEdges(9, 12, R, U);
 }
 
+// print turns 
 function printSeq() {
     let label = document.getElementById('label');
     let str = " ";
     for (c of seq) {
-        str += arrows[c].toString() + " ";
+        str += ARROW[c].toString() + " ";
     }
     label.innerText = `Последовательность: ${str}`;
 }
 
+// draw code next to the start
 function drawCubes(page, font) {
     const textSize = 120;
-    for (let i = 0; i < total; ++i) {
-        let x = leftCorner + dt * i;
-        let y = yHight;
+    for (let i = 0; i < N; ++i) {
+        let x = X_CORNER + DLT * i;
+        let y = Y_CORNER;
         let id = seq[i];
-        const textWidth = font.widthOfTextAtSize(tletters[id], textSize);
-        const del = (cubeWidth - textWidth) / 2 - 6;
-        drawBox(page, x, y, tcolors[id], cubeWidth);
-        drawText(page, tletters[id], x + del, y, textSize, font, blackColor);
+        const textWidth = font.widthOfTextAtSize(C_LETTERS[id], textSize);
+        const delta = (C_WIDTH - textWidth) / 2 - 6;
+        drawBox(page, x, y, C_COLORS[id], C_WIDTH);
+        drawText(page, C_LETTERS[id], x + delta, y, textSize, font, blackColor);
     }
-    drawBox(page, finishx[finish], finishy[finish], greenColor, sz=170);
+    drawBox(page, FINISH_X[finish], FINISH_Y[finish], greenColor, sz=170);
 }
 
 // Add field pdf to frame
@@ -109,19 +112,19 @@ async function createFieldPdf(filename) {
 
     drawCubes(pages[0], font);
 
-    pdfDoc.setTitle('Field');
+    pdfDoc.setTitle('Junior-1');
     pdfDoc.setAuthor('mosrobotics');
 
     const pdfResultBytes = await pdfDoc.save();
     renderInIframe(pdfResultBytes, filename);
 }
 
-
-function getSequence() {
+// gen code seq by path 
+function genSequence() {
     finish = 0;
     dir = 3;
     seq = [];
-    for (let i = 0; i < total; ++i) {
+    for (let i = 0; i < N; ++i) {
         let sz = graph[finish].edges.length;
         let id = getRandomInt(0, sz);
         let e = graph[finish].edges[id];
@@ -130,12 +133,11 @@ function getSequence() {
         dir = e.todir;
     }
     printSeq();
-    console.log(seq, finish);
 }
 
 async function createField() {
     if (finish == null) {
-        getSequence();
+        genSequence();
     }
     await createFieldPdf('field');
 }
@@ -147,6 +149,3 @@ function refreshPage() {
     dir = null;
     createField();
 }
-
-
-
