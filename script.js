@@ -8,7 +8,7 @@ const {
 
 const xLabels = ["А", "Б", "В", "Г", "Д", "Е", "Ж"];
 const yLabels = ["1", "2", "3", "4", "5"];
-const numberOfCrosses = xLabels.length * yLabels.length;
+const numberOfCrosses = 35;
 
 // for edges painting
 const cellSize = 568;
@@ -30,6 +30,7 @@ const codeLineTopY = 740.9;
 const codeLineX = 534.5;
 const codeLineY = 72.1;
 
+// colors
 const EPS = 2;
 const greenColor = rgb(0, 0.801, 0);//rgb(0.196078, 0.80392, 0.196078);
 const redColor = rgb(1, 0.199, 0.238);//rgb(1, 0.2, 0.2);
@@ -42,6 +43,7 @@ const colors = [redColor, yellowColor, greenColor, blueColor, whiteColor, blackC
 const letters = ["R", "Y", "G", "B", "W", "B"];
 const names = ["красный", "желтый", "зеленый", "синий", "белый", "черный"];
 
+// class for graph (senior-1)
 class Vertex {
     constructor(id) {
         this.i = parseInt(id / xLabels.length);
@@ -54,6 +56,7 @@ class Vertex {
     }
 }
 
+// array random shuffle
 Array.prototype.shuffle = function() {
     let m = this.length, i;
     while (m) {
@@ -63,10 +66,12 @@ Array.prototype.shuffle = function() {
     return this;
 }
 
+// load pdf bytes
 const fetchBinaryAsset = (asset) =>
     fetch(`${asset}`).then((res) => res.arrayBuffer());
 
 
+// pdf bytes -> iframe
 const renderInIframe = (pdfBytes, divName) => {
     const blob = new Blob([pdfBytes], { type: 'application/pdf', 
         view: 'Fit', 
@@ -79,6 +84,7 @@ const renderInIframe = (pdfBytes, divName) => {
     document.getElementById(divName).src = blobUrl;
 };
 
+// get random int: [min, max)
 function getRandomInt(min, max) {
     return min + Math.floor(Math.random() * Math.floor(max - min));
 }
@@ -87,6 +93,7 @@ function drawRect(page, x, y, width, height, color) {
     page.drawRectangle({x, y, width, height, color});
 }
 
+// returns array of random k numbers out of [0; n)
 function getCnk(n, k) {
     let ids = [];
     for (let i = 0; i < k; i++) {
