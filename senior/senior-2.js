@@ -8,10 +8,10 @@ const DLT = 567;
 const Y_TARGET_CORNER = 1725;
 
 // for card
-const X_CARD_CORNER = 213;
-const Y_CARD_CORNER = 423;
+const X_CARD_CORNER = 233;
+const Y_CARD_CORNER = 377;
 const DX = 85;
-const DY = 49;
+const DY = 54;
 
 // choose target's points
 function genPoints() {
@@ -66,7 +66,7 @@ function drawCodes(page) {
         let number = points[i] + 1;
         console.log(number);
         let deg = 16;
-        let y = Y_CARD_CORNER - Math.floor(i / 2) * (DY * 5 - 2);
+        let y = Y_CARD_CORNER - Math.floor(i / 2) * (DY * 5 + 2);
         let x = X_CARD_CORNER + DX * (i % 2);
         while (deg > 0) {
             if (Math.floor(number / deg) != 0) {
