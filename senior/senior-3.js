@@ -1,14 +1,5 @@
-const U = 0; // up
-const R = 1; // right
-const D = 2; // down
-const L = 3; // left
-
 const total = 10;
-
-let graph = [];
 let seq = null;
-let finish = null;
-let dir = null;
 
 const tcolors = [redColor, yellowColor, greenColor, greyColor];
 const tletters = ["R", "Y", "G", " "];
@@ -26,9 +17,6 @@ const starty = [6200, 5492, 4345, 3605, 5615, 4790, 4290, 3165, 3490, 2790,  730
 const type = [0, 1, 1, 1, 1, 0, 1, 0, 1, 0, 0, 1, 1, 0, 0]; 
 const arrow = [["⇐", "⇒"], ["⇑", "⇓"]];
 const arrd = [0, 35];
-
-//arrow[0][0]
-
 
 const leftCorner = 1080;
 const yHight = 5826;
@@ -66,11 +54,13 @@ function createSeq() {
 
 function printSeq() {
     let label = document.getElementById('label');
-    let str = " ";
-    for (c of seq) {
-        str += arrows[c].toString() + " ";
+    let str = [" ", " "];
+    for (let k = 0; k < 2; ++k) {
+        for (c of coords[k]) {
+            str[k] += (c + 1).toString() + " ";
+        }
     }
-    label.innerText = `Последовательность: ${str}`;
+    label.innerText = `Места установки в начале:${str[0]}; в конце:${str[1]}`;
 }
 
 function drawCode(page, font) {
@@ -94,7 +84,8 @@ function drawCubes(page, font, i) {
 }
 
 function drawStart(page, font, i) {
-    if (i == 1) {
+    st = getRandomInt(0, starty.length);
+    if (i == 1) { // drawing correct field
         drawBox(page, 450, 6130, whiteColor, 300);
         drawText(page, arrow[0][0], 500, 6200, 200, font, rgb(0, 0, 0));
         return;
@@ -130,6 +121,7 @@ async function createField() {
     if (seq == null) {
         createSeq();
     }
+    printSeq();
     await createFieldPdf('field', 0);
     await createFieldPdf('correct', 1);
 }
