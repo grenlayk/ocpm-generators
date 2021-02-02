@@ -1,54 +1,44 @@
 let vs = null;
-const n = 4;
 let lastColor = null;
 
-const cm = 28.345;
-const lineXcm = 33;
+const N = 4;
+const CM = 28.345;
+const CM_DX = 33;
 
+// print seq of vertices
 function printVertices(vs) {
     let dots = document.getElementById('dots');
-    dots.innerText = `${vs[0].label()}->${vs[1].label()}->${vs[2].label()}->${vs[3].label()}`;
+    dots.innerText = `Последовательность: ${vs[0].label()}->${vs[1].label()}->${vs[2].label()}->${vs[3].label()}`;
 }
 
-function getVertices() {
+// choose 4 vertices
+function genVertices() {
     let vertices = [];
     let ids = [14];
 
-    for (let i = 1; i < n; i++) {
-        ids.sort((a, b) => a - b);;
-        ids.push(getRandomInt(0, numberOfCrosses - 1 - i));
-        for (let j = 0; j < i; ++j) {
-            if (ids[i] == ids[j]) {
-                ++ids[i];
-            }
+    let add = getCnk(numberOfCrosses - 1, N - 1);
+    for (let i = 0; i < add.length; ++i) {
+        if (add[i] >= 14) {
+            ++add[i];
         }
     }
-
-    ids.shuffle();
-    for (let i = n - 1; i >= 1; --i) {
-        if (ids[i] == 14) {
-            ids[i] = ids[i - 1];
-            ids[i - 1] = 14;
-        }
-    }
-
-    for (let i = 0; i < n; ++i) {
+    add.shuffle();
+    ids = ids.concat(add);
+    for (let i = 0; i < ids.length; ++i) {
         vertices[i] = new Vertex(ids[i]);
     }
-
     printVertices(vertices)
-
     return vertices;
 }
 
-
+// draw cubes according to code
 function drawCubes(page, shift, font) {
     const textSize = 150;
-    for (let k = shift; k < n; k++) {
+    for (let k = shift; k < N; k++) {
         let x = vLeftTopX + cellSize * vs[k].j;
         let y = hLeftTopY - cellSize * vs[k].i;
-        let id = vs[(k + 1 - shift) % n].i;
-        if (shift == 0 && k == n - 1) {
+        let id = vs[(k + 1 - shift) % N].i;
+        if (shift == 0 && k == N - 1) {
             id = lastColor;
         }
         const textWidth = font.widthOfTextAtSize(letters[id], textSize);
@@ -56,7 +46,7 @@ function drawCubes(page, shift, font) {
         drawBox(page, x, y, colors[id]);
         drawText(page, letters[id], x + dt, y + 4, textSize, font, rgb(0,0,0));
     }
-    if (shift) {
+    if (shift) { // after finish field
         let x = 500;
         let y = 1400;
         drawBox(page, x, y, colors[lastColor]);
@@ -76,8 +66,8 @@ function drawCode(page) {
         if (code_colors[i]) {
             width = vs[1 + Math.floor(i/2)].j + 1;
         }
-        drawRect(page, lineTopX + lineXcm * sum, lineTopY, 
-            width * lineXcm + EPS, lineY, bwcolor[code_colors[i]]);
+        drawRect(page, lineTopX + CM_DX * sum, lineTopY, 
+            width * CM_DX + EPS, lineY, bwcolor[code_colors[i]]);
         sum += width;
     }
 }
@@ -93,9 +83,9 @@ async function createFieldPdf(filename, shift=0) {
     drawCode(pages[0]);
     drawCubes(pages[0], shift, font);
 
-    pdfDoc.setTitle('Field');
+    pdfDoc.setTitle('Junior-3-start');
     if (shift) {
-        pdfDoc.setTitle('Correct field');
+        pdfDoc.setTitle('Junior-3-finish');
     }
     pdfDoc.setAuthor('mosrobotics');
 
@@ -115,8 +105,8 @@ function drawCodePaper(page) {
             width = vs[1 + Math.floor(i/2)].j + 1;
         }
         sum += width;
-        drawRect(page, codeLineTopX, codeLineTopY + codeLineY - sum * cm - 0.5,
-            codeLineX, width * cm + 0.3, bwcolor[code_colors[i]]);
+        drawRect(page, codeLineTopX, codeLineTopY + codeLineY - sum * CM - 0.5,
+            codeLineX, width * CM + 0.3, bwcolor[code_colors[i]]);
     }
 }
 
@@ -138,7 +128,7 @@ async function createCodePdf(filename) {
 
 async function createField() {
     if (vs == null) {
-        vs = getVertices();
+        vs = genVertices();
     }
     await createFieldPdf('field', shift=0);
     await createFieldPdf('correct', shift=1);
@@ -147,6 +137,6 @@ async function createField() {
 
 function refreshPage() {
     vs = null;
-    lastColor = getRandomInt(0, n + 1);
+    lastColor = getRandomInt(0, N + 1);
     createField();
 }
