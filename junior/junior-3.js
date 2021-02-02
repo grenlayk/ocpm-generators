@@ -119,7 +119,7 @@ async function createCodePdf(filename) {
 
     drawCodePaper(pages[0]);
 
-    pdfDoc.setTitle('Code');
+    pdfDoc.setTitle('Junior-3-code');
     pdfDoc.setAuthor('mosrobotics');
 
     const pdfResultBytes = await pdfDoc.save();

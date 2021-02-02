@@ -52,7 +52,7 @@ async function createTargetPdf(filename, i=0) {
 
     drawTargets(pages[0]);
 
-    pdfDoc.setTitle('Senior-2-targets');
+    pdfDoc.setTitle('Senior-2-target');
     pdfDoc.setAuthor('mosrobotics');
 
     const pdfResultBytes = await pdfDoc.save();

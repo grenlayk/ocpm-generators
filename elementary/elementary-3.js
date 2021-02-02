@@ -37,7 +37,7 @@ async function createFieldPdf(filename, vertices) {
 
     drawVertices(vertices, pages[0], font);
 
-    pdfDoc.setTitle('Field');
+    pdfDoc.setTitle('Elementary-3');
     pdfDoc.setAuthor('mosrobotics');
 
     const pdfResultBytes = await pdfDoc.save();
