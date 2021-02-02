@@ -1,36 +1,38 @@
 let sizes = null;
 let pos = [1, 0];
-let idxs = null;
-const n = 3;
+let ids = null;
+const N = 3;
 
-const xCorner = 500;
-const yCorner = [2405, 900];
-const cubeSize = 145;
-const dt = [170, -170];
-const textSize = 135;
+const X_CORNER = 500;
+const Y_CORNER = [2405, 900];
+const C_WIDTH = 145;
+const DLT = [170, -170];
+const TEXT_SIZE = 135;
 
-const resDt = 850;
-const resXCorner = 1847;
-const resYCorner = [1015, 2287];
-const resYDt = [-428, 428];
+const F_DLT = 850;
+const F_X_CORNER = 1847;
+const F_Y_CORNER = [1015, 2287];
+const F_Y_DLT = [-428, 428];
 
+// draw cubes on the start field
 function drawCubes(page, font) {
-    for (let i = 0; i < n; ++i) {
-        let x = xCorner;
-        let y = yCorner[pos[i]] + idxs[i] * dt[pos[i]];
+    for (let i = 0; i < N; ++i) {
+        let x = X_CORNER;
+        let y = Y_CORNER[pos[i]] + ids[i] * DLT[pos[i]];
         let num = sizes[i] * 4 + 4;
-        drawBox(page, x, y, colors[sizes[i] + 1], cubeSize);
-        drawText(page, num.toString(), x + 30, y + 2, textSize, font, blackColor);
+        drawBox(page, x, y, colors[sizes[i] + 1], C_WIDTH);
+        drawText(page, num.toString(), x + 30, y + 2, TEXT_SIZE, font, blackColor);
     }
 }
 
+// draw cubes on the finish field
 function drawCorrectCubes(page, font) {
-    for (let i = 0; i < n; ++i) {
-        let x = resXCorner + idxs[i] * resDt;
-        let y = resYCorner[pos[i]] + (sizes[i]) * resYDt[pos[i]];
+    for (let i = 0; i < N; ++i) {
+        let x = F_X_CORNER + ids[i] * F_DLT;
+        let y = F_Y_CORNER[pos[i]] + (sizes[i]) * F_Y_DLT[pos[i]];
         let num = sizes[i] * 4 + 4;
-        drawBox(page, x, y, colors[sizes[i] + 1], cubeSize);
-        drawText(page, num.toString(), x + 30, y + 2, textSize, font, blackColor);
+        drawBox(page, x, y, colors[sizes[i] + 1], C_WIDTH);
+        drawText(page, num.toString(), x + 30, y + 2, TEXT_SIZE, font, blackColor);
     }
 }
 
@@ -43,10 +45,10 @@ async function createFieldPdf(filename, correct=false) {
     const font = await pdfDoc.embedFont(StandardFonts.Helvetica);
 
     if (correct) {
-        pdfDoc.setTitle('Correct field');
+        pdfDoc.setTitle('Elementary-2-start');
         drawCorrectCubes(pages[0], font);
     } else {
-        pdfDoc.setTitle('Field');
+        pdfDoc.setTitle('Elementary-2-finish');
         drawCubes(pages[0], font);
     }
 
@@ -56,22 +58,23 @@ async function createFieldPdf(filename, correct=false) {
     renderInIframe(pdfResultBytes, filename);
 }
 
+function genField() {
+    sizes = [];
+    for (let i = 0; i < N; ++i) {
+        sizes.push(getRandomInt(0, 2));
+    }
+    pos.push(getRandomInt(0, 2));
+    if (pos[N - 1] == 1) {
+        pos.sort((a, b) => a - b);
+    }
+    ids = [getRandomInt(0, 6)];
+    let arr = getCnk(6, 2);
+    ids = ids.concat(arr);
+}
+
 async function createField() {
     if (sizes == null) {
-        sizes = [];
-        for (let i = 0; i < n; ++i) {
-            sizes.push(getRandomInt(0, 2));
-        }
-        pos.push(getRandomInt(0, 2));
-        if (pos[n - 1] == 1) {
-            pos.sort((a, b) => a - b);
-        }
-        idxs = [getRandomInt(0, 6)];
-        let arr = getCnk(6, 2);
-        console.log(arr);
-        idxs = idxs.concat(arr);
-
-        console.log(idxs, sizes, pos);
+        genField();
     }
     await createFieldPdf('field');
     await createFieldPdf('correct', true);
