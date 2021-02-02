@@ -1,23 +1,23 @@
 let vs = null;
+const N = 3;
 
 function printVertices(vs) {
     let dots = document.getElementById('dots');
     dots.innerText = `Выбранные точки: ${vs[0].label()}, ${vs[1].label()}, ${vs[2].label()}`;
 }
 
-function getGoalVertices() {
+// choose vertices
+function genVertices() {
     let vertices = [];
-    let ids = getCnk(numberOfCrosses, 3);
-
-    for (let i = 0; i < 3; ++i) {
+    let ids = getCnk(numberOfCrosses, N);
+    for (let i = 0; i < N; ++i) {
         vertices[i] = new Vertex(ids[i]);
     }
-    
-    printVertices(vertices)
+    printVertices(vertices);
     return vertices;
 }
 
-
+// draw chosen vertices
 function drawVertices(vertices, page, font) {
     for (v of vertices) {
         let x = vLeftTopX + cellSize * v.j;
@@ -46,7 +46,7 @@ async function createFieldPdf(filename, vertices) {
 
 async function createField() {
     if (vs == null) {
-        vs = getGoalVertices();
+        vs = genVertices();
     }
     await createFieldPdf('field', vs);
 }
