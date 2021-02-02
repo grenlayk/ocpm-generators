@@ -118,7 +118,6 @@ function draw(page, font, text, x, y, green = false) {
 
     // Draw a box around the string of text
     drawRect(page, x - 10, y - 20, textWidth + 20, textHeight + 5, backgroundColor);
-
     drawText(page, text, x, y, textSize, font, rgb(0, 0, 0));
 }
 
