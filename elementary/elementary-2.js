@@ -45,10 +45,10 @@ async function createFieldPdf(filename, correct=false) {
     const font = await pdfDoc.embedFont(StandardFonts.Helvetica);
 
     if (correct) {
-        pdfDoc.setTitle('Elementary-2-start');
+        pdfDoc.setTitle('Elementary-2-finish');
         drawCorrectCubes(pages[0], font);
     } else {
-        pdfDoc.setTitle('Elementary-2-finish');
+        pdfDoc.setTitle('Elementary-2-start');
         drawCubes(pages[0], font);
     }
 
