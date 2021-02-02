@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8" />
+    <title>ОЦПМ Старшая 2</title>
+    <link rel="stylesheet" href="../style.css">
+    </link>
+    <script type="text/javascript" src="https://unpkg.com/pdf-lib/dist/pdf-lib.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300&display=swap" rel="stylesheet">
+</head>
+
+<body onload="refreshPage()">
+    <nav class="topnav">
+        <a href="../index.html" class="atopnav">Генераторы конфигурации полей Олимпиады ЦПМ</a>
+    </nav>
+    <div id="content">
+        Старшая 2. Тир
+        <div>
+            <button id="mybutton" onclick="refreshPage()">
+                Провести жеребьевку
+            </button>
+        </div> 
+        <div id="label">
+        </div>
+        <div id="points">
+        </div>
+        <div>
+            Мишень:
+        </div>
+        <iframe id="target"></iframe>
+        <div>
+            Перфокарта для печати:
+        </div>
+        <iframe id="card"></iframe>
+    </div>
+</body>
+<script type="text/javascript" src="../script.js"></script>
+<script type="text/javascript" src="senior-2.js"></script>
+
+</html>
