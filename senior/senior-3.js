@@ -22,13 +22,8 @@ const CUBE_Y = [6470, 4790,  220,  220, 700, 2790];
 let st = 14;
 let cCoords = [[], []];
 
-// subfunc for first / second half of code
-function choosePositions(i=0) {
-    cCoords[1 - i] = getCnk(6, 3);
-    let code = 0;
-    for (let id of cCoords[1 - i]) {
-        code += Math.pow(2, id);
-    }
+// add code 
+function pushCode(code) {
     let deg = 27; // 3^3
     while (deg > 0) {
         seq.push(Math.floor(code / deg));
@@ -37,13 +32,43 @@ function choosePositions(i=0) {
     }
 }
 
+
+// subfunc for first / second half of code
+function choosePositions() {
+    cCoords[1] = getCnk(6, 3);
+    cCoords[0] = [];
+    for (let i = 0; i < 6; ++i) {
+        let met = false;
+        cCoords[1].forEach((item) => {met = (item == i) ? true : met});
+        if (!met) {
+            cCoords[0].push(i);
+        }
+    }
+
+    if (getRandomInt(0, 2))  { // are there same positions?
+        let i0 = getRandomInt(0, 3); // for cCoords[0]
+        let i1 = getRandomInt(0, 3); // for cCoords[1]
+        cCoords[0][i0] = cCoords[1][i1];
+        cCoords[0].sort((a, b) => a - b);
+    }
+
+    let code = [0, 0];
+    for (let i = 1; i >= 0; --i) {
+        for (let id of cCoords[i]) {
+            code[i] += Math.pow(2, id);
+        }
+    }
+
+    pushCode(code[1]);
+    seq.push(3);
+    seq.push(3);
+    pushCode(code[0]);
+}
+
 // define start and finish position of cubes
 function genSeq() {
     seq = [];
-    choosePositions(0);
-    seq.push(3);
-    seq.push(3);
-    choosePositions(1);
+    choosePositions();
     seq.reverse();
 }
 
