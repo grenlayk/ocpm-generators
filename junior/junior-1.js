@@ -8,6 +8,7 @@ let graph = [];
 let seq = [];
 let finish = null;
 let dir = null;
+let correct = 1;
 
 const ARROW = ["↑", "↱", "↶", "↰"];
 const C_COLORS = [greyColor, blueColor, redColor, yellowColor];
@@ -121,14 +122,22 @@ async function createFieldPdf(filename) {
 
 // gen code seq by path 
 function genSequence() {
+    let colCnt = [0, 0, 0, 0];
     finish = 0;
     dir = 3;
     seq = [];
+    correct = 1;
     for (let i = 0; i < N; ++i) {
         let sz = graph[finish].edges.length;
         let id = getRandomInt(0, sz);
         let e = graph[finish].edges[id];
-        seq.push((e.vdir - dir + 6) % 4);
+        let res = (e.vdir - dir + 6) % 4;
+        colCnt[res] += 1;
+        if (colCnt[res] > 4) {
+            correct = 0;
+            return;
+        }
+        seq.push(res);
         finish = e.to;
         dir = e.todir;
     }
@@ -137,7 +146,10 @@ function genSequence() {
 
 async function createField() {
     if (finish == null) {
-        genSequence();
+        correct = 0;
+        while (!correct) {
+            genSequence();
+        }
     }
     await createFieldPdf('field');
 }

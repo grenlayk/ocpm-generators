@@ -64,7 +64,6 @@ function drawCodes(page) {
     points.shuffle();
     for (let i = 0; i < points.length; ++i) {
         let number = points[i] + 1;
-        console.log(number);
         let deg = 16;
         let y = Y_CARD_CORNER - Math.floor(i / 2) * (DY * 5 + 2);
         let x = X_CARD_CORNER + DX * (i % 2);
