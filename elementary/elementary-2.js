@@ -29,7 +29,7 @@ function drawCubes(page, font) {
 function drawCorrectCubes(page, font) {
     for (let i = 0; i < N; ++i) {
         let x = F_X_CORNER + ids[i] * F_DLT;
-        let y = F_Y_CORNER[pos[i]] + (sizes[i]) * F_Y_DLT[pos[i]];
+        let y = F_Y_CORNER[pos[i]] + (1 - sizes[i]) * F_Y_DLT[pos[i]];
         let num = sizes[i] * 4 + 4;
         drawBox(page, x, y, colors[sizes[i] + 1], C_WIDTH);
         drawText(page, num.toString(), x + 30, y + 2, TEXT_SIZE, font, blackColor);
