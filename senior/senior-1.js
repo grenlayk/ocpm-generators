@@ -2,6 +2,8 @@ const INF = 10000;
 const START_VERTEX = 14;
 
 let edges = null;
+let merged = null;
+let fieldBytes = null;
 
 class Edge {
     constructor(v, u, weight) {
@@ -180,6 +182,7 @@ async function createFieldPdf(divname, edges, drawShortest = false, goalVertex =
     // Add pdf to frame
     const pdfResultBytes = await pdfDoc.save();
     renderInIframe(pdfResultBytes, divname);
+    return pdfResultBytes;
 }
 
 
@@ -212,26 +215,50 @@ async function createCodePdf(filename, goalVertex) {
 
     const pdfResultBytes = await pdfDoc.save();
     renderInIframe(pdfResultBytes, filename);
+    return pdfResultBytes;
 }
 
 // create edges list and draw edges on the field
 async function createField() {
     edges = createEdges();
-    await createFieldPdf('field', edges);
+    const field = await createFieldPdf('field', edges);
+    return field;
 }
 
 async function createVertex() {
     if (edges == null) {
-        await createField();
+        fieldBytes = await createField();
     }
     // choose goal vertex
     const goalVertex = chooseVertex();
     // draw shortest path and code on field then draw code for print
-    await createFieldPdf('path', edges, true, goalVertex);
-    await createCodePdf('code', goalVertex);
+    const pathBytes = await createFieldPdf('path', edges, true, goalVertex);
+    const codeBytes = await createCodePdf('code', goalVertex);
+
+    // create merged file
+    merged = await PDFDocument.create();
+    const fieldPdf = await PDFDocument.load(fieldBytes);
+    const pathPdf = await PDFDocument.load(pathBytes);
+    const codePdf = await PDFDocument.load(codeBytes);
+
+    const copiedFieldPages = await merged.copyPages(fieldPdf, fieldPdf.getPageIndices());
+    copiedFieldPages.forEach((page) => merged.addPage(page));
+    const copiedPathPages = await merged.copyPages(pathPdf, pathPdf.getPageIndices());
+    copiedPathPages.forEach((page) => merged.addPage(page));
+    const copiedCodePages = await merged.copyPages(codePdf, codePdf.getPageIndices());
+    copiedCodePages.forEach((page) => merged.addPage(page));
+}
+
+async function downloadField() {
+    if (merged == null) {
+        createVertex();
+    }
+    const bytes = await merged.save();
+    download(bytes, "senior-1.pdf", "application/pdf");
 }
 
 function refreshPage() {
     edges = null;
+    merged = null;
     createVertex();
 }
