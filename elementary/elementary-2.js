@@ -57,7 +57,7 @@ async function createFieldPdf(filename, correct=false) {
 
     const pdfResultBytes = await pdfDoc.save();
     renderInIframe(pdfResultBytes, filename);
-    return pdfResultBytes
+    return pdfResultBytes;
 }
 
 function genField() {
@@ -91,12 +91,11 @@ async function createField() {
     copiedFieldPages.forEach((page) => merged.addPage(page));
     const copiedCorrectFieldPages = await merged.copyPages(correctFieldPdf, correctFieldPdf.getPageIndices());
     copiedCorrectFieldPages.forEach((page) => merged.addPage(page));
-
 }
 
 async function downloadField() {
     if (merged == null) {
-        createField()
+        createField();
     }
     const bytes = await merged.save();
     download(bytes, "elementary-2.pdf", "application/pdf");

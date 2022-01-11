@@ -85,7 +85,7 @@ async function createField() {
 
 async function downloadField() {
     if (merged == null) {
-        createField()
+        createField();
     }
     download(merged, "junior-2.pdf", "application/pdf");
 }

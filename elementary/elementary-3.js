@@ -43,7 +43,7 @@ async function createFieldPdf(filename, vertices) {
 
     const pdfResultBytes = await pdfDoc.save();
     renderInIframe(pdfResultBytes, filename);
-    return pdfResultBytes
+    return pdfResultBytes;
 }
 
 async function createField() {
@@ -55,7 +55,7 @@ async function createField() {
 
 async function downloadField() {
     if (merged == null) {
-        createField()
+        createField();
     }
     download(merged, "elementary-3.pdf", "application/pdf");
 }

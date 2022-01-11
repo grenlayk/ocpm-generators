@@ -153,7 +153,7 @@ async function createField() {
 
 async function downloadField() {
     if (merged == null) {
-        createField()
+        createField();
     }
     const bytes = await merged.save();
     download(bytes, "junior-3.pdf", "application/pdf");
