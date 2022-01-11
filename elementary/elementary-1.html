@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="../style.css">
     </link>
     <script type="text/javascript" src="https://unpkg.com/pdf-lib/dist/pdf-lib.js"></script>
+    <script src="https://unpkg.com/downloadjs@1.4.7"></script>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300&display=swap" rel="stylesheet">
 </head>
 
@@ -19,6 +20,9 @@
         <div>
             <button id="mybutton" onclick="refreshPage()">
                 Провести жеребьевку
+            </button>
+            <button id="mybutton" onclick="downloadField()">
+                Скачать все файлы
             </button>
         </div> 
         <iframe id="field"></iframe>
