@@ -9,6 +9,7 @@ let seq = [];
 let finish = null;
 let dir = null;
 let correct = 1;
+let merged = null;
 
 const ARROW = ["↑", "↱", "↶", "↰"];
 const C_COLORS = [greyColor, blueColor, redColor, yellowColor];
@@ -118,6 +119,7 @@ async function createFieldPdf(filename) {
 
     const pdfResultBytes = await pdfDoc.save();
     renderInIframe(pdfResultBytes, filename);
+    return pdfResultBytes;
 }
 
 // gen code seq by path 
@@ -151,13 +153,20 @@ async function createField() {
             genSequence();
         }
     }
-    await createFieldPdf('field');
+    merged = await createFieldPdf('field');
 }
 
+async function downloadField() {
+    if (merged == null) {
+        createField()
+    }
+    download(merged, "junior-1.pdf", "application/pdf");
+}
 
 function refreshPage() {
     buildGraph();
     finish = null;
     dir = null;
+    merged = null;
     createField();
 }
