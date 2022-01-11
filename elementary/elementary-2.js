@@ -1,4 +1,5 @@
 let sizes = null;
+let merged = null;
 let pos = [1, 0];
 let ids = null;
 const N = 3;
@@ -56,6 +57,7 @@ async function createFieldPdf(filename, correct=false) {
 
     const pdfResultBytes = await pdfDoc.save();
     renderInIframe(pdfResultBytes, filename);
+    return pdfResultBytes;
 }
 
 function genField() {
@@ -76,12 +78,32 @@ async function createField() {
     if (sizes == null) {
         genField();
     }
-    await createFieldPdf('field');
-    await createFieldPdf('correct', true);
+
+    const fieldBytes = await createFieldPdf('field');
+    const correctFieldBytes = await createFieldPdf('correct', true);
+
+    // create merged file
+    merged = await PDFDocument.create();
+    const fieldPdf = await PDFDocument.load(fieldBytes);
+    const correctFieldPdf = await PDFDocument.load(correctFieldBytes);
+
+    const copiedFieldPages = await merged.copyPages(fieldPdf, fieldPdf.getPageIndices());
+    copiedFieldPages.forEach((page) => merged.addPage(page));
+    const copiedCorrectFieldPages = await merged.copyPages(correctFieldPdf, correctFieldPdf.getPageIndices());
+    copiedCorrectFieldPages.forEach((page) => merged.addPage(page));
+}
+
+async function downloadField() {
+    if (merged == null) {
+        createField();
+    }
+    const bytes = await merged.save();
+    download(bytes, "elementary-2.pdf", "application/pdf");
 }
 
 function refreshPage() {
     sizes = null;
     pos = [1, 0];
+    merged = null;
     createField();
 }

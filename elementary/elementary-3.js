@@ -1,4 +1,5 @@
 let vs = null;
+let merged = null;
 const N = 3;
 
 function printVertices(vs) {
@@ -42,16 +43,25 @@ async function createFieldPdf(filename, vertices) {
 
     const pdfResultBytes = await pdfDoc.save();
     renderInIframe(pdfResultBytes, filename);
+    return pdfResultBytes;
 }
 
 async function createField() {
     if (vs == null) {
         vs = genVertices();
     }
-    await createFieldPdf('field', vs);
+    merged = await createFieldPdf('field', vs);
+}
+
+async function downloadField() {
+    if (merged == null) {
+        createField();
+    }
+    download(merged, "elementary-3.pdf", "application/pdf");
 }
 
 function refreshPage() {
     vs = null;
+    merged = null;
     createField();
 }

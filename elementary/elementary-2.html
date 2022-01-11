@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="../style.css">
     </link>
     <script type="text/javascript" src="https://unpkg.com/pdf-lib/dist/pdf-lib.js"></script>
+    <script src="https://unpkg.com/downloadjs@1.4.7"></script>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300&display=swap" rel="stylesheet">
 </head>
 
@@ -17,8 +18,16 @@
     <div id="content">
         Младшая 2. Координатная плоскость
         <div>
+            Цвет кубика указывает на его размер, 
+            а не на цвет кубика на поле. Желтый с цифрой 4 соответствует кубику высоты 4 см. 
+            Зеленый с цифрой 8 -- кубику высоты 8 см.
+        </div>
+        <div>
             <button id="mybutton" onclick="refreshPage()">
                 Провести жеребьевку
+            </button>
+            <button id="mybutton" onclick="downloadField()">
+                Скачать все файлы
             </button>
         </div> 
         <div>
@@ -33,5 +42,4 @@
 </body>
 <script type="text/javascript" src="../script.js"></script>
 <script type="text/javascript" src="elementary-2.js"></script>
-
 </html>

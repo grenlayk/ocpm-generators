@@ -1,4 +1,5 @@
 let seq = null;
+let merged = null;
 const N = 10;
 
 const C_COLORS = [redColor, yellowColor, greenColor, greyColor];
@@ -141,6 +142,7 @@ async function createFieldPdf(filename, i=0) {
 
     const pdfResultBytes = await pdfDoc.save();
     renderInIframe(pdfResultBytes, filename);
+    return pdfResultBytes;
 }
 
 
@@ -149,13 +151,31 @@ async function createField() {
         genSeq();
     }
     printSeq();
-    await createFieldPdf('field', 0);
-    await createFieldPdf('correct', 1);
+    const fieldBytes = await createFieldPdf('field', 0);
+    const correctFieldBytes = await createFieldPdf('correct', 1);
+
+    // create merged file
+    merged = await PDFDocument.create();
+    const fieldPdf = await PDFDocument.load(fieldBytes);
+    const correctFieldPdf = await PDFDocument.load(correctFieldBytes);
+
+    const copiedFieldPages = await merged.copyPages(fieldPdf , fieldPdf .getPageIndices());
+    copiedFieldPages.forEach((page) => merged.addPage(page));
+    const copiedCorrectFieldPages = await merged.copyPages(correctFieldPdf, correctFieldPdf.getPageIndices());
+    copiedCorrectFieldPages.forEach((page) => merged.addPage(page));
 }
 
+async function downloadField() {
+    if (merged == null) {
+        createField();
+    }
+    const bytes = await merged.save();
+    download(bytes, "senior-3.pdf", "application/pdf");
+}
 
 function refreshPage() {
     seq = null;
+    merged = null;
     createField();
 }
 

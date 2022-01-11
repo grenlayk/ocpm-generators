@@ -1,5 +1,6 @@
 let colorIds = [0, 1, 0, 1, 0, 1, 0, 1, 0];
 let ids = null;
+let merged = null;
 const N = 28;
 let K = 9;
 let C_COLORS = [0, 1, 2, 3, 5];
@@ -44,6 +45,7 @@ async function createFieldPdf(filename) {
 
     const pdfResultBytes = await pdfDoc.save();
     renderInIframe(pdfResultBytes, filename);
+    return pdfResultBytes;
 }
 
 // add 1 / 2 / 3 / 6 cubes of color num to colorIds
@@ -78,10 +80,18 @@ async function createField() {
         chooseIds();
         printColors();
     }
-    await createFieldPdf('field');
+    merged = await createFieldPdf('field');
+}
+
+async function downloadField() {
+    if (merged == null) {
+        createField();
+    }
+    download(merged, "junior-2.pdf", "application/pdf");
 }
 
 function refreshPage() {
     ids = null;
+    merged = null;
     createField();
 }

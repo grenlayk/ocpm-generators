@@ -1,5 +1,6 @@
 let vs = null;
 let lastColor = null;
+let merged = null;
 
 const N = 4;
 const CM = 28.345;
@@ -91,6 +92,7 @@ async function createFieldPdf(filename, shift=0) {
 
     const pdfResultBytes = await pdfDoc.save();
     renderInIframe(pdfResultBytes, filename);
+    return pdfResultBytes;
 }
 
 
@@ -124,19 +126,42 @@ async function createCodePdf(filename) {
 
     const pdfResultBytes = await pdfDoc.save();
     renderInIframe(pdfResultBytes, filename);
+    return pdfResultBytes;
 }
 
 async function createField() {
     if (vs == null) {
         vs = genVertices();
     }
-    await createFieldPdf('field', shift=0);
-    await createFieldPdf('correct', shift=1);
-    await createCodePdf('code');
+    const fieldBytes = await createFieldPdf('field', shift=0);
+    const correctFieldBytes = await createFieldPdf('correct', shift=1);
+    const codeBytes = await createCodePdf('code');
+
+    // create merged file
+    merged = await PDFDocument.create();
+    const fieldPdf = await PDFDocument.load(fieldBytes);
+    const correctFieldPdf = await PDFDocument.load(correctFieldBytes);
+    const codePdf = await PDFDocument.load(codeBytes);
+
+    const copiedFieldPages = await merged.copyPages(fieldPdf, fieldPdf.getPageIndices());
+    copiedFieldPages.forEach((page) => merged.addPage(page));
+    const copiedCorrectFieldPages = await merged.copyPages(correctFieldPdf, correctFieldPdf.getPageIndices());
+    copiedCorrectFieldPages.forEach((page) => merged.addPage(page));
+    const codePages = await merged.copyPages(codePdf, codePdf.getPageIndices());
+    codePages.forEach((page) => merged.addPage(page));
+}
+
+async function downloadField() {
+    if (merged == null) {
+        createField();
+    }
+    const bytes = await merged.save();
+    download(bytes, "junior-3.pdf", "application/pdf");
 }
 
 function refreshPage() {
     vs = null;
+    merged = null;
     lastColor = getRandomInt(0, N + 1);
     createField();
 }

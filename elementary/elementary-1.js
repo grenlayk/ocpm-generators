@@ -3,7 +3,7 @@ let ids = null;
 const N = 28;
 const K = 9;
 let C_COLORS = null;
-
+let merged = null;
 const X_CORNER = 913;
 const Y_CORNER = 1605 - 24;
 const DLT = 175.7;
@@ -38,6 +38,7 @@ async function createFieldPdf(filename) {
 
     const pdfResultBytes = await pdfDoc.save();
     renderInIframe(pdfResultBytes, filename);
+    return pdfResultBytes;
 }
 
 async function createField() {
@@ -46,10 +47,18 @@ async function createField() {
         C_COLORS  = getCnk(4, 2);
         colorIds.shuffle();
     }
-    await createFieldPdf('field');
+    merged = await createFieldPdf('field');
+}
+
+async function downloadField() {
+    if (merged == null) {
+        createField();
+    }
+    download(merged, "elementary-1.pdf", "application/pdf");
 }
 
 function refreshPage() {
     ids = null;
+    merged = null;
     createField();
 }
