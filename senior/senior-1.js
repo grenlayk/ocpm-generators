@@ -225,12 +225,42 @@ async function createField() {
     return field;
 }
 
+function findFinish() {
+    let bestVertex = null;
+    let best_dist = 1000;
+    const w = createEdgesTable(edges);
+    for (let i = 0; i < numberOfCrosses; i++) {
+        const currentVertex = new Vertex(i);
+        if (i == 0 || i == 6 || i == 28 || i == 34) {
+            continue;
+        }
+        let dist = 0;
+        for (let j = 0; j < numberOfCrosses; j++) {
+            const otherVertex = new Vertex(j);
+            if (isNeighbors(currentVertex, otherVertex)) {
+                dist += w[j][i]
+            }
+        }
+        if (dist < best_dist) {
+            bestVertex = currentVertex
+            best_dist = dist
+            console.log(bestVertex.i, bestVertex.j, best_dist)
+        }
+    }
+    return bestVertex;
+}
+
 async function createVertex() {
     if (edges == null) {
         fieldBytes = await createField();
     }
     // choose goal vertex
     const goalVertex = chooseVertex();
+    // modify edges
+    const diff = (goalVertex.i + 1) + (goalVertex.j + 1) * 10
+    for (let e of edges) {
+        e.weight = (e.weight + diff) % 51;
+    }
     // draw shortest path and code on field then draw code for print
     const pathBytes = await createFieldPdf('path', edges, true, goalVertex);
     const codeBytes = await createCodePdf('code', goalVertex);
@@ -247,6 +277,16 @@ async function createVertex() {
     copiedPathPages.forEach((page) => merged.addPage(page));
     const copiedCodePages = await merged.copyPages(codePdf, codePdf.getPageIndices());
     copiedCodePages.forEach((page) => merged.addPage(page));
+    // find finish 
+    const bestVertex = findFinish();
+    let label = document.getElementById('label');
+    label.innerText = `Финиш: x = ${bestVertex.j + 1}, y = ${bestVertex.i + 1}`;
+    console.log(bestVertex.i, bestVertex.j)
+    // demodify edges
+    for (let e of edges) {
+        e.weight = (e.weight - diff + 51) % 51;
+    }
+    
 }
 
 async function downloadField() {

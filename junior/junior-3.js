@@ -9,17 +9,18 @@ const CM_DX = 33;
 // print seq of vertices
 function printVertices(vs) {
     let dots = document.getElementById('dots');
-    dots.innerText = `Последовательность: ${vs[0].label()}->${vs[1].label()}->${vs[2].label()}->${vs[3].label()}`;
+    dots.innerText = `Последовательность: ${vs[0].label()}->${vs[1].label()}->${vs[2].label()}->${vs[3].label()}. Проверьте что первый объект находится первым на пути от старта`;
 }
 
 // choose 4 vertices
 function genVertices() {
     let vertices = [];
-    let ids = [14];
+    let start = 14 + getRandomInt(0, 7)
+    let ids = [start];
 
     let add = getCnk(numberOfCrosses - 1, N - 1);
     for (let i = 0; i < add.length; ++i) {
-        if (add[i] >= 14) {
+        if (add[i] >= start) {
             ++add[i];
         }
     }

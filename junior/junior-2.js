@@ -1,4 +1,4 @@
-let colorIds = [0, 1, 0, 1, 0, 1, 0, 1, 0];
+let colorIds = [0, 1, 0, 1, 0, 1, 0, 1, 2];
 let ids = null;
 let merged = null;
 const N = 28;
@@ -48,9 +48,9 @@ async function createFieldPdf(filename) {
     return pdfResultBytes;
 }
 
-// add 1 / 2 / 3 / 6 cubes of color num to colorIds
+// add 2 / 3  cubes of color num to colorIds
 function add(num, mx=4) {
-    let cnt = getRandomInt(1, mx + 1);
+    let cnt = getRandomInt(2, 4);
     if (cnt == 4) {
         cnt = 6;
     }
@@ -62,13 +62,13 @@ function add(num, mx=4) {
 
 // choose colors and positions
 function chooseIds() {
-    add(2);
     add(3);
+    add(4);
     let border = Math.min(N - colorIds.length, 6);
     if (border == 4 || border == 5) {
         border = 3;
     }
-    add(4, border);
+    // add(5, border);
     K = colorIds.length;
     ids = getCnk(N, K);
     C_COLORS.shuffle();
@@ -76,7 +76,7 @@ function chooseIds() {
 
 async function createField() {
     if (ids == null) {
-        colorIds = [0, 0, 0, 0, 0, 1, 1, 1, 1];
+        colorIds = [0, 0, 0, 0, 1, 1, 1, 1, 2];
         chooseIds();
         printColors();
     }
