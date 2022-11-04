@@ -14,9 +14,28 @@ const Y_CARD_CORNER = 377;
 const DX = 85;
 const DY = 54;
 
+function isRestrictionCorrect(points) {
+    for (c of points) {
+        if (c >= 12) {
+            continue
+        }
+        // Reflect point (0 -> 18, 1 -> 19, ..., 6 -> 12, 7->13 ..)
+        opposite_point = c + 18  - Math.floor(c / 6) * 12
+        for (o_c of points) {
+            if (o_c == opposite_point) {
+                return false
+            }
+        }
+    }
+    return true
+}
+
 // choose target's points
 function genPoints() {
     points = getCnk(N, 5);
+    while (!isRestrictionCorrect(points)) {
+        points = getCnk(N, 5);
+    }
 }
 
 // print distance to the target
