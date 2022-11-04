@@ -140,3 +140,16 @@ function drawBox(page, x, y, color, sz=170) {
         borderWidth: 1
     })
 }
+
+
+function drawCircle(page, x, y, color, sz=170) {
+    // Draw a circle
+    page.drawCircle({
+        x: x - 5,
+        y: y - 25,
+        size: sz,
+        color: color,
+        borderColor: rgb(0, 0, 0),
+        borderWidth: 1
+    })
+}

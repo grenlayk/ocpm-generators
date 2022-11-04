@@ -16,7 +16,7 @@ const DY = 54;
 
 // choose target's points
 function genPoints() {
-    points = getCnk(N, 4);
+    points = getCnk(N, 5);
 }
 
 // print distance to the target
@@ -40,7 +40,7 @@ function drawTargets(page, font) {
     for (let p of points) {
         const x = p % W;
         const y = Math.floor(p / W);
-        drawBox(page, 5 + x * DLT, Y_TARGET_CORNER - y * DLT, blackColor, DLT);
+        drawCircle(page, 5 + x * DLT + DLT / 2, Y_TARGET_CORNER - y * DLT + DLT / 2, blueColor, DLT / 6);
     }
     for (let i = 0; i < N; ++i) {
         const x = i % W;
@@ -86,23 +86,6 @@ function drawCodes(page) {
     }
 }
 
-// Add card pdf to frame
-async function createCardPdf(filename) {
-    const url = '../pdf/card-template.pdf';
-    const pdfBytes = await fetchBinaryAsset(url);
-    const pdfDoc = await PDFDocument.load(pdfBytes);
-    const pages = pdfDoc.getPages();
-
-    drawCodes(pages[0]);
-
-    pdfDoc.setTitle('Senior-2-card');
-    pdfDoc.setAuthor('mosrobotics');
-
-    const pdfResultBytes = await pdfDoc.save();
-    renderInIframe(pdfResultBytes, filename);
-    return pdfResultBytes;
-}
-
 async function createPdf() {
     if (points == null) {
         genPoints();
@@ -111,17 +94,13 @@ async function createPdf() {
     printDistance();
     printPoints();
     const targetBytes = await createTargetPdf('target');
-    const cardBytes = await createCardPdf('card');
 
     // create merged file
     merged = await PDFDocument.create();
     const targetPdf = await PDFDocument.load(targetBytes);
-    const cardPdf = await PDFDocument.load(cardBytes);
 
     const copiedTargetPages = await merged.copyPages(targetPdf, targetPdf.getPageIndices());
     copiedTargetPages.forEach((page) => merged.addPage(page));
-    const copiedCardPages = await merged.copyPages(cardPdf, cardPdf.getPageIndices());
-    copiedCardPages.forEach((page) => merged.addPage(page));
 }
 
 async function downloadField() {
