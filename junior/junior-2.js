@@ -76,10 +76,10 @@ async function createFieldPdf(filename, correct=false) {
     const font = await pdfDoc.embedFont(StandardFonts.Helvetica);
 
     if (correct) {
-        pdfDoc.setTitle('Elementary-2-finish');
+        pdfDoc.setTitle('Junior-2-finish');
         drawCorrectCubes(pages[0], font);
     } else {
-        pdfDoc.setTitle('Elementary-2-start');
+        pdfDoc.setTitle('Junior-2-start');
         drawCubes(pages[0], font);
     }
 
@@ -147,7 +147,7 @@ async function downloadField() {
         createField();
     }
     const bytes = await merged.save();
-    download(bytes, "elementary-2.pdf", "application/pdf");
+    download(bytes, "junior-2.pdf", "application/pdf");
 }
 
 function refreshPage() {
