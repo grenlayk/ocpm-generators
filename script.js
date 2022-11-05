@@ -141,6 +141,18 @@ function drawBox(page, x, y, color, sz=170) {
     })
 }
 
+function drawFrame(page, x, y, color, width=5, sz=170) {
+    // Draw a box around the string of text
+    page.drawRectangle({
+        x: x - 5,
+        y: y - 25,
+        width: sz,
+        height: sz,
+        borderColor: color,
+        borderWidth: width,
+    })
+}
+
 
 function drawCircle(page, x, y, color, sz=170) {
     // Draw a circle
